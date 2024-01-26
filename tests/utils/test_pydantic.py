@@ -263,7 +263,7 @@ class Bora(BaseModel):
 
 def test_coerce_numbers_to_str() -> None:
     bora = Bora(a=1)
-    print(bora.model_dump())
+    bora.model_dump()
 
 
 class Bora2(BaseModel):

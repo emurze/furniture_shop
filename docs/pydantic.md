@@ -408,7 +408,13 @@ Annotated[
 * PositiveInt
 
 
-* NegativeInt
+* NonNegativeInt
+
+
+* StrictBool - Annotated[bool, Strict()]
+
+
+* Json
 
 
 ### Validators

@@ -9,7 +9,7 @@ import pytest
 import sqlalchemy as sa
 import yaml
 from pydantic import TypeAdapter, ValidationError, BaseModel, ConfigDict, \
-    Field
+    Field, Json, Strict
 from sqlalchemy.orm import DeclarativeBase, Mapped, mapped_column, mapper
 from typing_extensions import TypedDict
 
@@ -50,15 +50,15 @@ def test_timeit() -> None:
     # timeit
 
     ta = TypeAdapter(Literal['a', 'b'])
-    result1 = timeit(lambda: ta.validate_python('a'), number=10000)
+    _result1 = timeit(lambda: ta.validate_python('a'), number=10000)
 
     class AB(StrEnum):
         a: str = 'a'
         b: str = 'b'
 
     ta = TypeAdapter(AB)
-    result2 = timeit(lambda: ta.validate_python('a'), number=10000)
-    print(result2 / result1)
+    _result2 = timeit(lambda: ta.validate_python('a'), number=10000)
+    # _result2 / _result1 -> 3+ times
 
 
 class Hi(TypedDict):
@@ -237,3 +237,13 @@ def test_multiple_annotations_errors(value: str) -> None:
 
 def test_multiple_annotations_success() -> None:
     str_range_ta.validator.validate_python("lerka")
+
+
+class NewModel(BaseModel):
+    json_field: Json[list[str]]
+    is_done: Annotated[bool, Strict()]
+
+
+def test_strict_bool_errors() -> None:
+    with pytest.raises(ValidationError):
+        NewModel(json_field='["open", "door"]', is_done='er')

@@ -63,25 +63,21 @@ class UserModel(BaseModel):
     @field_validator('name', mode='after')
     @classmethod
     def check_after_name(cls, value: str) -> str:
-        print('NAME AFTER CHECK')
         return value
 
     @model_validator(mode='before')
     @classmethod
     def check_before_model(cls, data: Any) -> str:
-        print('MODEL BEFORE CHECK')
         return data
 
     @model_validator(mode='after')
     def check_after_model(self, data: Any) -> str:
-        print('MODEL AFTER CHECK')
         return data
 
 
 def test_field_validator() -> None:
     model = UserModel(name='John')
-    model.name = 234
-    print(model.model_dump())
+    model.model_dump()
 
 
 class User(BaseModel):
@@ -136,4 +132,4 @@ class Car(BaseModel):
 
 def test_serializer() -> None:
     car = Car(quantity=40)
-    print(car.model_dump())
+    assert car.model_dump() == {'quantity': f'serialized 40'}
