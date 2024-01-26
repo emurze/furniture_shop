@@ -213,3 +213,27 @@ def test_your_model() -> None:
     model = YourModel(value=1, age=24)
     with pytest.raises(ValidationError):
         model.value = 'hi'
+
+
+StrRange10 = Annotated[
+    str,
+    Field(min_length=1),
+    Field(max_length=10),
+]
+str_range_ta = TypeAdapter(StrRange10)
+
+
+@pytest.mark.parametrize(
+    "value",
+    (
+        '',
+        'lerka' * 3,
+    )
+)
+def test_multiple_annotations_errors(value: str) -> None:
+    with pytest.raises(ValidationError):
+        str_range_ta.validator.validate_python(value)
+
+
+def test_multiple_annotations_success() -> None:
+    str_range_ta.validator.validate_python("lerka")

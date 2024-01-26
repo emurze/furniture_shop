@@ -2,12 +2,205 @@
 
 ### Config
 
+* frozen
+
+* strict
+
+* extra - 'forbid', 'allow' in init, 'ignore' - auto repr=False, exclude=True
+  ```python
+  class BaseConfig(BaseModel):
+      model_config = ConfigDict(extra='forbid')
+  
+  
+  class NewModel(BaseConfig):
+      a: int
+  
+  
+  def test_new_model_forbid() -> None:
+      with pytest.raises(ValidationError):
+          NewModel(a=1, b=3)
+  ```
+
+* populate_by_name
+  ```python
+  class Model1(BaseModel):
+      model_config = ConfigDict(populate_by_name=True)
+      kitty: str = Field(alias='cat')
+  
+  
+  def test_populate_by_name() -> None:
+      m1 = Model1(kitty='dog')
+      assert m1.model_dump() == {'kitty': 'dog'}
+  
+  
+  def test_populate_by_name_attr() -> None:
+      m2 = Model1(cat='dog')
+      assert m2.model_dump() == {'kitty': 'dog'}
+  ```
+
+* validate_assignment - Revalidate Model when field is changed
+  ```python
+  class Class(BaseModel, validate_assignment=True):
+      a: int
+  
+  
+  def test_validate_assignment_success() -> None:
+      class_ = Class(a=2)
+      class_.a = '3'  # because of strict = False
+  
+  
+  def test_validate_assignment_error() -> None:
+      class_ = Class(a=2)
+      with pytest.raises(ValidationError):
+          class_.a = 'hi'
+  ```
+  
+* use_enum_values
+  ```python
+  class Card(Enum):
+      F = 'FIRST'
+      S = 'SECOND'
+  
+  
+  class Deck(BaseModel):
+      model_config = ConfigDict(use_enum_values=True)
+      cards: list[Card] = Field(default=Card.F)
+  
+  
+  def test_deck_schema() -> None:
+      deck = Deck(cards=[Card.F])
+      print(deck.model_dump() == {'cards': ['FIRST']})
+  ```
+
+* validate_default - validate default in Field
+
+* coerce_numbers_to_str - independent of strict option
+
+* arbitrary_types_allowed - you can use simple __init__.py classes
+```python
+class ICar(Protocol):
+    mark: str
+
+
+class Car:
+    def __init__(self, mark: str) -> None:
+        self.mark = mark
+
+    def __eq__(self, other: ICar) -> bool:
+        return self.mark == other.mark
+
+    def __repr__(self) -> str:
+        return self.mark
+
+
+class Builder(BaseModel):
+    model_config = ConfigDict(arbitrary_types_allowed=True)
+
+    car: Car
+    age: int
+
+
+def test_arbitrary_type_allowed() -> None:
+    car = Car('BMW')
+    builder = Builder(car=car, age=10)
+    assert builder.model_dump() == {'car': Car('BMW'), 'age': 10}
+```
+
+* from_attributes
+  ```python
+  @dataclass
+  class Human:
+      name: str
+      age: int
+  
+  
+  class Person(BaseModel):
+      model_config = ConfigDict(from_attributes=True)
+      name: str
+      age: PositiveInt
+  
+  
+  def test_from_attributes() -> None:
+      human = Human('vlad', 24)
+      person = Person.model_validate(human)
+      print(person.model_dump())
+  ```
+
+* json_schema_extra
+  ```python
+  class Bora3(BaseModel):
+      model_config = ConfigDict(json_schema_extra={'vlad': 'THE BEST GUY'})
+      a: int = Field(json_schema_extra={'name': 'THE BEST GUY'})
+  
+  
+  def test_config_json_schema_extra() -> None:
+      assert Bora3.model_json_schema(mode='validation') == {
+          'properties': {
+              'a': {
+                  'name': 'THE BEST GUY',
+                  'title': 'A',
+                  'type': 'integer',
+              },
+          },
+          'required': ['a'],
+          'title': 'Bora3',
+          'type': 'object',
+          'vlad': 'THE BEST GUY',
+      }
+  ```
+
+* revalidate_instances ( Mutable Problem ) - dataclasses, etc aren't revalidated during validation
+  ```python
+  class SubHuman(BaseModel):
+      name: str
+      age: int
+  
+      
+  class SubPerson(BaseModel):
+      human: SubHuman
+  
+  
+  def test_revalidate_instances_no_error() -> None:
+      human = SubHuman(name='Vlad', age=24)
+      human.name = 1234
+      SubPerson(human=human)
+  ```
+  ```python
+  class SubPerson(BaseModel, revalidate_instances='always'):
+      human: SubHuman
+  
+  
+  def test_revalidate_instances_errors() -> None:
+      human = SubHuman(name='Vlad', age=24)
+      human.age = 'age'
+  
+      with pytest.raises(ValidationError):
+          SubPerson(human=human)
+  ```
+  
+* hide_input_in_errors - protects you from SQL-injection
+  ```
+  [type=string_type]
+  
+  # rather than
+   
+  [type=string_type, input_value=1, input_type=int]
+  ```
+
+* validate_return - whether validate return from call validators  #####
+```python
+
+```
+
+* base_settings sources reordering, adding, removing
+
 ### Methods
 
 * .model_construct() - build without validation
 
 ```python
 class YourModel(BaseModel):
+    # model_config = ConfigDict(defer_build=True) to change types_namespace
     value: int
 
 
@@ -20,30 +213,66 @@ def test_model_construct() -> None:
 * .model_validate_json() - fast build-in validation
 
 
-* .model_dump()  params #####
+* .model_dump()  #####
 * .model_dump_json()
 
 
 * .model_copy()
 
 
-* .model_extra() - Field set during validation  #####
+* .model_extra() - Field set during validation
+  ```python
+  class Post(BaseModel):
+      model_config = ConfigDict(extra='allow')
+  
+      id: uuid.UUID = Field(default_factory=lambda: uuid.uuid4())
+      title: str = Field(
+          description='FROM ARG',
+          json_schema_extra={
+              'description': 'FROM JSON_SCHEMA_EXTRA',
+              'name': 'Lera',
+          }
+      )
+  
+      def __post_init__(self, data: str) -> None:
+          self.data = data
+  
+  
+  
+  def test_model_extra_data() -> None:
+      post = Post(title='Hello world!', name='Vlad')
+      post.model_post_init('hello')
+  
+      assert post.model_extra == {'name': 'Vlad'}
+  ```
 
 
 * .model_parametrized_name() - name with Generic
 
 
-* .model_perform_post_init()  #####
+* .model_perform_post_init(**kwargs)
 
 
 * .model_fields - dict('field_1': FieldInfo(), 'field_2': FieldInfo())
 * .model_fields_set - ('id', 'title'')
 
 
-* .model_json_schema - Pydantic model presentation
-* .model_rebuild()  #####
+* .model_json_schema(mode="validation" | "serialization") - model presentation
+* .model_rebuild()
   ```python
-  
+  class Bar(BaseModel):
+      foo: 'Foo10'
+
+
+  def test_rebuild() -> None:
+      with pytest.raises(PydanticUserError):
+          Bar.model_json_schema()
+
+      class Foo10(BaseModel):
+          pass
+
+      Bar.model_rebuild()
+      pprint(Bar.model_json_schema())
   ```
 
 ### Field
@@ -177,6 +406,18 @@ Annotated[
     Field(...),
 ]
 ```
+
+* SecretStr
+
+
+* PositiveInt
+
+
+* NegativeInt
+
+
+### TypeAdapter, @validate_call
+
 
 ### Performance
 

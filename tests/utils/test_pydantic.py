@@ -1,11 +1,12 @@
 import uuid
 from dataclasses import InitVar
+from enum import Enum
 from pprint import pprint
-from typing import ClassVar, Literal
+from typing import ClassVar, Literal, Protocol
 
 import pytest
 from pydantic import BaseModel, PositiveInt, validate_call, Field, ConfigDict, \
-    ValidationError
+    ValidationError, PydanticUserError
 from pydantic.dataclasses import dataclass
 from pydantic.fields import FieldInfo
 
@@ -162,6 +163,8 @@ def test_validate_default() -> None:
 
 
 class Post(BaseModel):
+    model_config = ConfigDict(extra='allow')
+
     id: uuid.UUID = Field(default_factory=lambda: uuid.uuid4())
     title: str = Field(
         description='FROM ARG',
@@ -171,7 +174,207 @@ class Post(BaseModel):
         }
     )
 
+    def __post_init__(self, data: str) -> None:
+        self.data = data
+
+
+
+def test_model_extra_data() -> None:
+    post = Post(title='Hello world!', name='Vlad')
+    post.model_post_init('hello')
+
+    assert post.model_extra == {'name': 'Vlad'}
+
 
 def test_json_schema_extra() -> None:
     post = Post(title='Hello world!')
-    pprint(post.model_json_schema())
+    post.model_json_schema()
+
+
+class Bar(BaseModel):
+    foo: 'Foo10'
+
+
+def test_rebuild() -> None:
+    with pytest.raises(PydanticUserError):
+        Bar.model_json_schema()
+
+    class Foo10(BaseModel):
+        pass
+
+    Bar.model_rebuild()
+    Bar.model_json_schema()
+
+
+class BaseConfig(BaseModel):
+    model_config = ConfigDict(extra='forbid')
+
+
+class NewModel(BaseConfig):
+    a: int
+
+
+def test_new_model_forbid() -> None:
+    with pytest.raises(ValidationError):
+        NewModel(a=1, b=3)
+
+
+class Model1(BaseModel):
+    model_config = ConfigDict(populate_by_name=True)
+    kitty: str = Field(alias='cat')
+
+
+def test_populate_by_name() -> None:
+    m1 = Model1(kitty='dog')
+    assert m1.model_dump() == {'kitty': 'dog'}
+
+
+def test_populate_by_name_attr() -> None:
+    m2 = Model1(cat='dog')
+    assert m2.model_dump() == {'kitty': 'dog'}
+
+
+class Class(BaseModel, validate_assignment=True):
+    a: int = Field(serialization_alias='hi')
+
+
+def test_validate_assignment_success() -> None:
+    class_ = Class(a=2)
+    class_.a = '3'  # because of strict = False
+
+
+def test_validate_assignment_error() -> None:
+    class_ = Class(a=2)
+    with pytest.raises(ValidationError):
+        class_.a = 'hi'
+
+
+def test_model_json_schema_mode() -> None:
+    assert (
+        Class.model_json_schema(mode='validation')
+        != Class.model_json_schema(mode='serialization')
+    )
+
+
+class Bora(BaseModel):
+    model_config = ConfigDict(coerce_numbers_to_str=True)
+    a: str
+
+
+def test_coerce_numbers_to_str() -> None:
+    bora = Bora(a=1)
+    print(bora.model_dump())
+
+
+class Bora2(BaseModel):
+    model_config = ConfigDict(hide_input_in_errors=True)
+    a: str
+
+
+def test_hidden_input_in_errors() -> None:
+    try:
+        Bora2(a=1)
+    except ValidationError:
+        """
+        # Hidden input
+        print(f'{exp=}')
+        """
+
+
+class Bora3(BaseModel):
+    model_config = ConfigDict(json_schema_extra={'vlad': 'THE BEST GUY'})
+    a: int = Field(json_schema_extra={'name': 'THE BEST GUY'})
+
+
+def test_config_json_schema_extra() -> None:
+    assert Bora3.model_json_schema(mode='validation') == {
+        'properties': {
+            'a': {
+                'name': 'THE BEST GUY',
+                'title': 'A',
+                'type': 'integer',
+            },
+        },
+        'required': ['a'],
+        'title': 'Bora3',
+        'type': 'object',
+        'vlad': 'THE BEST GUY',
+    }
+
+
+class Card(Enum):
+    F = 'FIRST'
+    S = 'SECOND'
+
+
+class Deck(BaseModel):
+    model_config = ConfigDict(use_enum_values=True)
+    cards: list[Card] = Field(default=Card.F)
+
+
+def test_deck_schema() -> None:
+    deck = Deck(cards=[Card.F])
+    assert deck.model_dump() == {'cards': ['FIRST']}
+
+
+class ICar(Protocol):
+    mark: str
+
+
+class Car:
+    def __init__(self, mark: str) -> None:
+        self.mark = mark
+
+    def __eq__(self, other: ICar) -> bool:
+        return self.mark == other.mark
+
+    def __repr__(self) -> str:
+        return self.mark
+
+
+class Builder(BaseModel):
+    model_config = ConfigDict(arbitrary_types_allowed=True)
+
+    car: Car
+    age: int
+
+
+def test_arbitrary_type_allowed() -> None:
+    car = Car('BMW')
+    builder = Builder(car=car, age=10)
+    assert builder.model_dump() == {'car': Car('BMW'), 'age': 10}
+
+
+@dataclass
+class Human:
+    name: str
+    age: int
+
+
+class Person(BaseModel):
+    model_config = ConfigDict(from_attributes=True)
+    name: str
+    age: PositiveInt
+
+
+def test_from_attributes() -> None:
+    human = Human('vlad', 24)
+    person = Person.model_validate(human)
+    assert person.model_dump() == {'name': 'vlad', 'age': 24}
+
+
+class SubHuman(BaseModel):
+    name: str
+    age: int
+
+
+class SubPerson(BaseModel, revalidate_instances='always'):
+    human: Human
+
+
+def test_revalidate_instances_errors() -> None:
+    human = SubHuman(name='Vlad', age=24)
+    human.age = 'age'
+
+    with pytest.raises(ValidationError):
+        SubPerson(human=human)
