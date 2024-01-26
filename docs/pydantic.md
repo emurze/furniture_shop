@@ -77,34 +77,34 @@
 * coerce_numbers_to_str - independent of strict option
 
 * arbitrary_types_allowed - you can use simple __init__.py classes
-```python
-class ICar(Protocol):
-    mark: str
-
-
-class Car:
-    def __init__(self, mark: str) -> None:
-        self.mark = mark
-
-    def __eq__(self, other: ICar) -> bool:
-        return self.mark == other.mark
-
-    def __repr__(self) -> str:
-        return self.mark
-
-
-class Builder(BaseModel):
-    model_config = ConfigDict(arbitrary_types_allowed=True)
-
-    car: Car
-    age: int
-
-
-def test_arbitrary_type_allowed() -> None:
-    car = Car('BMW')
-    builder = Builder(car=car, age=10)
-    assert builder.model_dump() == {'car': Car('BMW'), 'age': 10}
-```
+  ```python
+  class ICar(Protocol):
+      mark: str
+  
+  
+  class Car:
+      def __init__(self, mark: str) -> None:
+          self.mark = mark
+  
+      def __eq__(self, other: ICar) -> bool:
+          return self.mark == other.mark
+  
+      def __repr__(self) -> str:
+          return self.mark
+  
+  
+  class Builder(BaseModel):
+      model_config = ConfigDict(arbitrary_types_allowed=True)
+  
+      car: Car
+      age: int
+  
+  
+  def test_arbitrary_type_allowed() -> None:
+      car = Car('BMW')
+      builder = Builder(car=car, age=10)
+      assert builder.model_dump() == {'car': Car('BMW'), 'age': 10}
+  ```
 
 * from_attributes
   ```python
@@ -187,11 +187,6 @@ def test_arbitrary_type_allowed() -> None:
   [type=string_type, input_value=1, input_type=int]
   ```
 
-* validate_return - whether validate return from call validators  #####
-```python
-
-```
-
 * base_settings sources reordering, adding, removing
 
 ### Methods
@@ -213,7 +208,7 @@ def test_model_construct() -> None:
 * .model_validate_json() - fast build-in validation
 
 
-* .model_dump()  #####
+* .model_dump()
 * .model_dump_json()
 
 
@@ -416,7 +411,126 @@ Annotated[
 * NegativeInt
 
 
-### TypeAdapter, @validate_call
+### Validators
+
+* @validate_call
+
+* TypeAdapter
+
+* Annotated validators
+  - AfterValidator - takes first available place if initialized then executed
+  - BeforeValidator - takes order place
+  - PlainValidator - takes order place and stops after execution
+  - WrapValidator - takes any order place
+  
+  ```python
+  str_validation = Annotated[
+      int,
+      BeforeValidator(make_validator(max_validator, 'before-1')),
+      WrapValidator(make_validator(wrap_map_validator, 'wrap-1')),
+      BeforeValidator(make_validator(max_validator, 'before-2')),
+      WrapValidator(make_validator(wrap_map_validator, 'wrap-2')),
+      AfterValidator(make_validator(max_validator, 'after-2')),
+      PlainValidator(make_validator(max_validator, 'plain-2')),
+      BeforeValidator(make_validator(max_validator, 'before-3')),
+      AfterValidator(make_validator(max_validator, 'after-3')),
+      WrapValidator(make_validator(wrap_map_validator, 'wrap-3')),
+      BeforeValidator(make_validator(max_validator, 'before-4')),
+      WrapValidator(make_validator(wrap_map_validator, 'wrap-4')),
+  ]
+  # wrap-4
+  # before-4
+  # wrap-3
+  # before-3
+  # plain-2
+  # after-3
+  ```
+
+* pydantic model validators
+  ```python
+  @field_validator('name', mode='after')
+  @classmethod
+  def check_after_name(cls, value: str) -> str:
+      print('Validated')
+      return value
+
+  @model_validator(mode='before')
+  @classmethod
+  def check_before_model(cls, data: Any) -> str:
+      print(data)
+      return data
+
+  @model_validator(mode='after')
+  def check_after_model(self, data: Any) -> str:
+      print(data)
+      raise PydanticCustomError('Hello vlados', 'vlad is an answer')
+      # return data
+  ```
+
+### Serializations
+
+* @field_serializer
+* @model_serializer
+  ```python
+  class Model(BaseModel):
+      value: str
+  
+      @model_serializer
+      def serialize_model(self) -> dict:
+          return {'value': f'serialized {self.value}'}
+  
+  
+  def test_model_serializer() -> None:
+      model = Model(value='Hello')
+      assert model.model_dump() == {'value': 'serialized Hello'}
+  ```
+  ```python
+  class User(BaseModel):
+      id: UUID = Field(frozen=True, default_factory=uuid4)
+      name: str = Field(min_length=3, serialization_alias="username")
+      age: int = Field(gt=16)
+      city: str = Field(min_length=3, default='London')
+      zip_code: Optional[str] = Field(default=None)
+  
+      @field_serializer('name')
+      def serialize_name(self, name: str) -> str:
+          return f'{name} + Vlad'
+  
+  
+  def test_serialization() -> None:
+      user = User(name='Arthas', age=28)
+      assert (
+          user.model_dump(
+              include={'id', 'name', 'age', 'city', 'zip_code'},
+              exclude={'age'},
+              by_alias=True,
+              exclude_defaults=True,
+              exclude_unset=True,  # fields that you don't set manually,
+              exclude_none=True,
+          )
+      ) == {'username': 'Arthas + Vlad'}
+  ```
+
+* Annotated
+  - PlainSerializer
+  - WrapSerializer
+  
+  ```python
+  def serialize_int(value: Any, nxt: SerializerFunctionWrapHandler) -> str:
+      return f"serialized {nxt(value)}"
+
+
+  FancyInt = Annotated[int, WrapSerializer(serialize_int)]
+  
+  
+  class Car(BaseModel):
+      quantity: FancyInt
+  
+  
+  def test_serializer() -> None:
+      car = Car(quantity=40)
+      print(car.model_dump())
+  ```
 
 
 ### Performance
