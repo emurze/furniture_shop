@@ -1,7 +1,9 @@
 version: "3.8"
 services:
   api:
-    build: .
+    build:
+      context: .
+      dockerfile: dockerfiles/api/dockerfile
     image: api:v1
     container_name: api
     command:
@@ -19,26 +21,13 @@ services:
     depends_on:
       - db
 
-  pgadmin4:
-    image: dpage/pgadmin4:8.1
-    container_name: pgadmin4
-    networks:
-      - backend
-    ports:
-      - '8888:80'
-    env_file:
-      - .env/.pgadmin.env
-    volumes:
-      - pgadmin_data:/var/lib/pgadmin
-    restart: unless-stopped
-    depends_on:
-      - db
-
   db:
-    image: postgres:16
+    image: emurze/testdb_postgres:16
     container_name: db
     networks:
       - backend
+    ports:
+      - '5432:5432'
     env_file:
       - .env/.db.env
     volumes:
