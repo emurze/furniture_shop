@@ -4,7 +4,7 @@ import pytest
 from sqlalchemy.ext.asyncio import create_async_engine, AsyncEngine
 
 from config import PostgresConfig
-from models import metadata
+from core.models import metadata
 
 test_db_config = PostgresConfig(
     db_name=os.getenv('TEST_DB_NAME'),
@@ -14,6 +14,9 @@ test_db_config = PostgresConfig(
     db_port=os.getenv('TEST_DB_PORT'),
 )
 
+_dsn = test_db_config.get_dsn()
+_async_engine = create_async_engine(_dsn, echo=True)
+
 
 def get_async_engine() -> AsyncEngine:
     dsn = test_db_config.get_dsn()
@@ -22,12 +25,12 @@ def get_async_engine() -> AsyncEngine:
 
 @pytest.fixture(scope="session", autouse=True)
 async def create_and_drop_tables() -> None:
-    async with get_async_engine().begin() as conn:
+    async with _async_engine.begin() as conn:
         await conn.run_sync(metadata.create_all)
 
     yield
 
-    async with get_async_engine().begin() as conn:
+    async with _async_engine.begin() as conn:
         await conn.run_sync(metadata.drop_all)
 
 
