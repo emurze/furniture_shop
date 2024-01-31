@@ -4,7 +4,7 @@ import pytest
 from sqlalchemy.ext.asyncio import create_async_engine, AsyncEngine
 
 from config import PostgresConfig
-from core.models import metadata
+from queries.models import metadata
 
 test_db_config = PostgresConfig(
     db_name=os.getenv('TEST_DB_NAME'),
