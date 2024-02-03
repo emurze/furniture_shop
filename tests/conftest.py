@@ -1,39 +1,44 @@
 import os
+from collections.abc import Iterator
 
 import pytest
-from sqlalchemy.ext.asyncio import create_async_engine, AsyncEngine
 
-from config import PostgresConfig
-from queries.models import metadata
-
-test_db_config = PostgresConfig(
-    db_name=os.getenv('TEST_DB_NAME'),
-    db_user=os.getenv('TEST_DB_USER'),
-    db_pass=os.getenv('TEST_DB_PASS'),
-    db_host=os.getenv('TEST_DB_HOST'),
-    db_port=os.getenv('TEST_DB_PORT'),
+from sqlalchemy.ext.asyncio import (
+    create_async_engine,
+    async_sessionmaker,
+    AsyncSession, AsyncConnection,
 )
 
-_dsn = test_db_config.get_dsn()
-_async_engine = create_async_engine(_dsn, echo=True)
+from main.config.build import BaseConfig
+from shared.persistence.sqlalchemy.config import PostgresConfig
 
 
-def get_async_engine() -> AsyncEngine:
-    dsn = test_db_config.get_dsn()
-    return create_async_engine(dsn, echo=True)
+def build_test_config() -> BaseConfig:
+    return BaseConfig(
+        db=PostgresConfig(
+            db_name=os.getenv("TEST_DB_NAME"),
+            db_user=os.getenv("TEST_DB_USER"),
+            db_pass=os.getenv("TEST_DB_PASS"),
+            db_host=os.getenv("TEST_DB_HOST"),
+            db_port=os.getenv("TEST_DB_PORT"),
+        ),
+    )
 
 
-@pytest.fixture(scope="session", autouse=True)
-async def create_and_drop_tables() -> None:
-    async with _async_engine.begin() as conn:
-        await conn.run_sync(metadata.create_all)
+config = build_test_config()
 
-    yield
+async_engine = create_async_engine(config.db.get_dsn())
 
-    async with _async_engine.begin() as conn:
-        await conn.run_sync(metadata.drop_all)
+async_session_maker = async_sessionmaker(async_engine)
 
 
 @pytest.fixture
-def async_engine() -> AsyncEngine:
-    return get_async_engine()
+async def session() -> Iterator[AsyncSession]:
+    async with async_session_maker() as session:
+        yield session
+
+
+@pytest.fixture
+async def conn() -> Iterator[AsyncConnection]:
+    async with async_engine.begin() as conn:
+        yield conn

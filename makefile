@@ -6,7 +6,7 @@ BLUE=\e[34m
 
 YELLOW=\033[33m
 
-DOCKER_CONTAINER_NAME=api
+DOCKER_CONTAINER_NAME=trading.api
 
 
 # Functions
