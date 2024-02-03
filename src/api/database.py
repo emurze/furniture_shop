@@ -6,9 +6,9 @@ from sqlalchemy.ext.asyncio import (
     AsyncSession,
 )
 
-from database.postgres.config import config
+from api.config import config
 
-async_engine = create_async_engine(config.get_dsn())
+async_engine = create_async_engine(config.db.get_dsn())
 async_session_maker = async_sessionmaker()
 
 
