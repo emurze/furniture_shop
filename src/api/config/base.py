@@ -9,9 +9,3 @@ from database.postgres.config import PostgresConfig
 class BaseConfig:
     app: AppConfig = AppConfig()
     db: DatabaseConfig = PostgresConfig()
-
-
-def build_config() -> BaseConfig:
-    config = BaseConfig()
-    return config
-

@@ -1,6 +1,6 @@
-from api.config.build import build_config
+from api.config.base import BaseConfig
 
-config = build_config()
+config = BaseConfig()
 
 __all__ = (
     'config',
