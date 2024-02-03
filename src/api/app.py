@@ -13,7 +13,7 @@ app = FastAPI(
 
 
 @app.get('/')
-async def root(session: AsyncSession = Depends(get_session)) -> Response:
+async def root(session: AsyncSession = Depends(get_session)) -> str:
     repository = Repository(session=session)
     service = Service(repository)
-    return Response()
+    return "Hello World!"

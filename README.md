@@ -1,7 +1,9 @@
 # Furniture Shop
 
-* Pydantic Docs
+### Docs
 
-* SqlAlchemy Docs
+* Pydantic
+
+* SqlAlchemy
 
 ### Clean Architecture and DDD

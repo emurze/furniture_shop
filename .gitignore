@@ -5,7 +5,7 @@
 # venv
 *venv
 venv
-*env
+*.env
 .env
 *my_venv
 my_venv

@@ -11,7 +11,7 @@ services:
     ports:
       - '8080:8000'
     env_file:
-      - .env/.app.env
+      - env/.app.env
     volumes:
       - ./src:/service/src
       - ./tests:/service/tests
@@ -27,7 +27,7 @@ services:
     ports:
       - '5432:5432'
     env_file:
-      - .env/.db.env
+      - env/.db.env
     volumes:
       - db_data:/var/lib/postgresql/data
     restart: unless-stopped
