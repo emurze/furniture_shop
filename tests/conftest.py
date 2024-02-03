@@ -2,6 +2,7 @@ import os
 from collections.abc import Iterator
 
 import pytest
+from pydantic import BaseConfig
 
 from sqlalchemy.ext.asyncio import (
     create_async_engine,
@@ -9,8 +10,7 @@ from sqlalchemy.ext.asyncio import (
     AsyncSession, AsyncConnection,
 )
 
-from main.config.build import BaseConfig
-from shared.persistence.sqlalchemy.config import PostgresConfig
+from database.postgres.config import PostgresConfig
 
 
 def build_test_config() -> BaseConfig:
@@ -26,9 +26,7 @@ def build_test_config() -> BaseConfig:
 
 
 config = build_test_config()
-
 async_engine = create_async_engine(config.db.get_dsn())
-
 async_session_maker = async_sessionmaker(async_engine)
 
 

@@ -1,7 +1,7 @@
 from datetime import datetime
 from typing import TypeAlias
 
-from furniture_shop.allocation.domain import Batch, OrderLine
+from modules.allocation.domain.models import Batch, OrderLine
 
 BatchAndLine: TypeAlias = tuple[Batch, OrderLine]
 

@@ -1,7 +1,7 @@
-# Trading
+# Furniture Shop
 
 * Pydantic Docs
 
 * SqlAlchemy Docs
 
-### Clean Architecture
+### Clean Architecture and DDD

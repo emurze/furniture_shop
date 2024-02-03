@@ -1,9 +1,7 @@
 version: "3.8"
 services:
   api:
-    build:
-      context: .
-      dockerfile: src/dockerfile
+    build: .
     image: api:v1
     container_name: furniture_shop.api
     command:

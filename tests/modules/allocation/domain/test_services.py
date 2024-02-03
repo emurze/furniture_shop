@@ -2,9 +2,9 @@ from datetime import date, timedelta
 
 import pytest
 
-from furniture_shop.allocation.domain import OutOfStock
-from furniture_shop.allocation.domain import Batch, OrderLine
-from furniture_shop.allocation.domain import allocate
+from modules.allocation.domain.exceptions import OutOfStock
+from modules.allocation.domain.models import Batch, OrderLine
+from modules.allocation.domain.services import allocate
 
 tomorrow = date.today() + timedelta(days=1)
 
