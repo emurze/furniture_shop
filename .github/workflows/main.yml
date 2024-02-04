@@ -36,6 +36,7 @@ jobs:
           make ci_lint
 
   type-checks:
+    needs: lint
     runs-on: ubuntu-latest
     steps:
       - name: Set up Repository
