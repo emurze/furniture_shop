@@ -10,25 +10,21 @@ from sqlalchemy.ext.asyncio import (
     AsyncConnection,
 )
 
-from api.config import BaseConfig
-from api.config.app import AppConfig
+from api.config.ports import DatabaseConfig
 from database.postgres.config import PostgresConfig
 
 
-def build_config() -> BaseConfig:
-    return BaseConfig(
-        app=AppConfig(),
-        db=PostgresConfig(
-            db_name=os.getenv("TEST_DB_NAME"),
-            db_user=os.getenv("TEST_DB_USER"),
-            db_pass=os.getenv("TEST_DB_PASS"),
-            db_host=os.getenv("TEST_DB_HOST"),
-            db_port=os.getenv("TEST_DB_PORT"),
-        ),
+class TestConfig:
+    db: DatabaseConfig = PostgresConfig(
+        db_name=os.getenv("TEST_DB_NAME"),
+        db_user=os.getenv("TEST_DB_USER"),
+        db_pass=os.getenv("TEST_DB_PASS"),
+        db_host=os.getenv("TEST_DB_HOST"),
+        db_port=os.getenv("TEST_DB_PORT"),
     )
 
 
-config = build_config()
+config = TestConfig()
 async_engine = create_async_engine(config.db.get_dsn())
 async_session_maker = async_sessionmaker(async_engine)
 
