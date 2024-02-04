@@ -8,7 +8,6 @@ class PostgresConfig(BaseSettings):
     db_pass: SecretStr
     db_host: str
     db_port: PositiveInt
-    project_title: str
 
     def get_dsn(self, driver: str = "postgresql+asyncpg") -> str:
         return str(
@@ -16,7 +15,7 @@ class PostgresConfig(BaseSettings):
                 scheme=driver,
                 username=self.db_name,
                 password=self.db_pass.get_secret_value(),
-                host=f"{self.project_title}.{self.db_host}",
+                host=self.db_host,
                 port=self.db_port,
                 path=self.db_name,
             )

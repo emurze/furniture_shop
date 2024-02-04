@@ -3,8 +3,9 @@ from typing import Optional
 
 from pydantic import BaseModel, ConfigDict, Field
 
-from modules.allocation.domain.exceptions import \
-    BatchGtSupportedOnlyForBatchError
+from modules.allocation.domain.exceptions import (
+    BatchGtSupportedOnlyForBatchError,
+)
 
 
 class Model(BaseModel):

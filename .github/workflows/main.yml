@@ -2,19 +2,6 @@ name: Furniture shop CI
 
 on: [push]
 
-env:
-  SECRET_KEY: ${{ secrets.SECRET_KEY }}
-  DEBUG: 1
-  LOGGING_LEVEL: DEBUG
-
-  DB_NAME: e-learning
-  DB_USER: e-learning
-  DB_PASSWORD: 12345678
-
-  POSTGRES_DB: furniture_shop
-  POSTGRES_USER: furniture_shop
-  POSTGRES_PASSWORD: 12345678
-
 jobs:
   lint:
     runs-on: ubuntu-latest
@@ -36,7 +23,6 @@ jobs:
           make ci_lint
 
   type-checks:
-    needs: lint
     runs-on: ubuntu-latest
     steps:
       - name: Set up Repository
@@ -58,7 +44,7 @@ jobs:
           make ci_typechecks
 
   unit-tests:
-    needs: lint
+    needs: [lint, type-checks]
     runs-on: ubuntu-latest
     steps:
       - name: Set up Repository
@@ -83,13 +69,19 @@ jobs:
     runs-on: ubuntu-latest
     services:
       db:
-        image: postgres:13.0-alpine
+        image: postgres:16.0-alpine
         ports:
           - 5432:5432
         env:
           POSTGRES_DB: test_furniture_shop
           POSTGRES_USER: test_adm1
           POSTGRES_PASSWORD: 12345678
+    env:
+      TEST_DB_NAME: test_furniture_shop
+      TEST_DB_USER: test_adm1
+      TEST_DB_PASS: 12345678
+      TEST_DB_HOST: localhost
+      TEST_DB_PORT: 5432
     steps:
       - name: Set up Repository
         uses: actions/checkout@v4
