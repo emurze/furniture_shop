@@ -77,6 +77,8 @@ jobs:
           POSTGRES_USER: test_adm1
           POSTGRES_PASSWORD: 12345678
     env:
+      SECRET_KEY: suppress
+      PROJECT_TITLE: suppress
       DB_NAME: suppress
       DB_USER: suppress
       DB_PASS: 12345
