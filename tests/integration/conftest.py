@@ -2,12 +2,11 @@ import os
 from collections.abc import AsyncIterator
 
 import pytest
-
 from sqlalchemy.ext.asyncio import (
-    create_async_engine,
-    async_sessionmaker,
-    AsyncSession,
     AsyncConnection,
+    AsyncSession,
+    async_sessionmaker,
+    create_async_engine,
 )
 
 from api.config.ports import DatabaseConfig

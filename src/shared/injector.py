@@ -2,7 +2,7 @@ import functools
 import inspect
 from collections.abc import AsyncIterator, Callable
 from contextlib import asynccontextmanager, suppress
-from typing import AsyncGenerator, Any
+from typing import Any, AsyncGenerator
 
 
 async def _open_kw_gens(kw: dict) -> tuple[dict, list[AsyncGenerator]]:

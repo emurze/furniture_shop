@@ -21,7 +21,7 @@ services:
 
   db:
     image: emurze/testdb_postgres:16
-    container_name: trading.db
+    container_name: furniture_shop.db
     networks:
       - backend
     ports:

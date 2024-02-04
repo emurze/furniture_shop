@@ -14,7 +14,7 @@ DOCKER_CONTAINER_NAME = ${PROJECT_TITLE}.api
 # Functions
 
 define docker_exec
-	docker exec -it ${DOCKER_CONTAINER_NAME} bash -c "$(1)"
+	docker exec ${DOCKER_CONTAINER_NAME} bash -c "$(1)"
 endef
 
 
@@ -64,6 +64,7 @@ ci_integration_tests:
 # Tests
 
 black:
+	poetry run isort
 	poetry run black . -l 79
 
 lint:
@@ -77,6 +78,12 @@ unittests:
 
 integration_tests:
 	$(call docker_exec,poetry run pytest -s tests/integration)
+
+
+cli_run_daemon:
+	@docker compose up -d --build
+
+cli_integration_tests: cli_run_daemon integration_tests down
 
 
 # todo: add coverage

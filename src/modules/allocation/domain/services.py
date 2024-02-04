@@ -1,7 +1,7 @@
 from collections.abc import Sequence
 
 from modules.allocation.domain.exceptions import OutOfStock
-from modules.allocation.domain.models import OrderLine, Batch
+from modules.allocation.domain.models import Batch, OrderLine
 
 
 def allocate(line: OrderLine, batches: Sequence[Batch]) -> int:

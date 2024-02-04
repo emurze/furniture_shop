@@ -1,4 +1,4 @@
-from pydantic import SecretStr, PositiveInt, PostgresDsn
+from pydantic import PositiveInt, PostgresDsn, SecretStr
 from pydantic_settings import BaseSettings
 
 
