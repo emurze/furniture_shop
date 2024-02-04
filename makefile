@@ -63,9 +63,14 @@ ci_integration_tests:
 
 # Tests
 
-black:
+
+isort:
 	poetry run isort
+
+black:
 	poetry run black . -l 79
+
+formatting: isort black
 
 lint:
 	poetry run flake8 --config setup.cfg src tests
