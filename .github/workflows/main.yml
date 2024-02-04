@@ -69,7 +69,7 @@ jobs:
     runs-on: ubuntu-latest
     services:
       db:
-        image: postgres:16.0-alpine
+        image: emurze/testdb_postgres:16
         ports:
           - 5432:5432
         env:
@@ -77,6 +77,11 @@ jobs:
           POSTGRES_USER: test_adm1
           POSTGRES_PASSWORD: 12345678
     env:
+      DB_NAME: suppress
+      DB_USER: suppress
+      DB_PASS: 12345
+      DB_HOST: suppress
+      DB_PORT: 12345
       TEST_DB_NAME: test_furniture_shop
       TEST_DB_USER: test_adm1
       TEST_DB_PASS: 12345678
