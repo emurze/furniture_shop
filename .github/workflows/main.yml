@@ -49,6 +49,7 @@ jobs:
       - name: Install mypy
         run: |
           pip install mypy
+          pip install pydantic
 
       - name: Check types with mypy
         run: |
