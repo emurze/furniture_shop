@@ -80,12 +80,6 @@ integration_tests:
 	$(call docker_exec,poetry run pytest -s tests/integration)
 
 
-cli_run_daemon:
-	@docker compose up -d --build
-
-cli_integration_tests: cli_run_daemon integration_tests down
-
-
 # todo: add coverage
 
 test: lint typechecks unittests integration_tests

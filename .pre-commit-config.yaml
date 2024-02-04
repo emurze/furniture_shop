@@ -7,6 +7,14 @@ repos:
 
   - repo: local
     hooks:
+      - id: Recreate Container
+        name: container
+        stages: [ pre-commit ]
+        language: system
+        entry: docker compose down && docker compose up --build -d
+        types: [ python ]
+        exclude: setup.py
+
       - id: flake8
         name: flake8
         stages: [ pre-commit ]
@@ -33,5 +41,5 @@ repos:
         name: integration_tests
         stages: [ pre-commit ]
         language: system
-        entry: bash -c "docker rm -f furniture_shop.db && docker-compose up --build -d && make integration_tests"
+        entry: make integration_tests
         types: [ python ]
