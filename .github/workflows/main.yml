@@ -33,7 +33,7 @@ jobs:
         with:
           python-version: 3.11
 
-      - name: Install mypy
+      - name: Install mypy, pydantic, and sqlalchemy
         run: |
           pip install mypy
           pip install pydantic
@@ -55,12 +55,12 @@ jobs:
         with:
           python-version: 3.11
 
-      - name: Install flake8
+      - name: Install pytest and pydantic
         run: |
           pip install pytest
           pip install pydantic
 
-      - name: Lint with flake8
+      - name: Run Tests
         run: |
            make ci_unittests
 
@@ -69,7 +69,7 @@ jobs:
     runs-on: ubuntu-latest
     services:
       db:
-        image: emurze/testdb_postgres:16
+        image: postgres:16-alpine3.19
         ports:
           - 5432:5432
         env:
