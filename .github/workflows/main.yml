@@ -72,6 +72,7 @@ jobs:
       - name: Install flake8
         run: |
           pip install pytest
+          pip install pydantic
 
       - name: Lint with flake8
         run: |
