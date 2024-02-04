@@ -33,5 +33,5 @@ repos:
         name: integration_tests
         stages: [ pre-commit ]
         language: system
-        entry: bash -c "docker compose up --build -d" 2>
+        entry: bash -c "docker compose up --build -d 2> && make integration_tests"
         types: [ python ]
