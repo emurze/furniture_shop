@@ -46,11 +46,11 @@ jobs:
         with:
           python-version: 3.11
 
-      - name: Install flake8
+      - name: Install mypy
         run: |
-          pip install flake8
+          pip install mypy
 
-      - name: Lint with flake8
+      - name: Check types with mypy
         run: |
           make ci_typechecks
 
