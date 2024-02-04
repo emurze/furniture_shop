@@ -43,7 +43,23 @@ clean:
 	docker compose down -v
 
 
-# Tests | You can run tests only if you have previously run container
+
+# CI Tests
+
+ci_lint:
+	flake8 --config setup.cfg src tests
+
+ci_typechecks:
+	mypy --config setup.cfg src tests
+
+ci_unittests:
+	pytest -s tests/unit
+
+ci_integration_tests:
+	poetry run pytest -s tests/integration
+
+
+# Tests
 
 black:
 	poetry run black . -l 79
@@ -51,13 +67,16 @@ black:
 lint:
 	poetry run flake8 --config setup.cfg src tests
 
-types:
+typechecks:
 	poetry run mypy --config setup.cfg src tests
 
 unittests:
-	$(call docker_exec,poetry run pytest -s tests)
+	poetry run pytest -s tests/unit
 
-coverage:
-	$(call docker_exec,cd src && poetry run coverage run --rcfile ../setup.cfg main.py && poetry run coverage report --rcfile ../setup.cfg)
+integration_tests:
+	$(call docker_exec,poetry run pytest -s tests/integration)
 
-test: lint types coverage unittests
+
+# todo: add coverage
+
+test: lint typechecks unittests integration_tests

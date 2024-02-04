@@ -16,18 +16,18 @@ def test_allocate_can_allocate_earliest_batch() -> None:
     """
 
     in_stock_batch = Batch(
-        reference=1,
+        reference="1",
         CKU="RETRO-CLOCK",
         purchased_quantity=100,
         ETA=None,
     )
     shipment_batch = Batch(
-        reference=2,
+        reference="2",
         CKU="RETRO-CLOCK",
         purchased_quantity=100,
         ETA=tomorrow,
     )
-    line = OrderLine(order_ref=1, CKU="RETRO-CLOCK", quantity=10)
+    line = OrderLine(order_ref="1", CKU="RETRO-CLOCK", quantity=10)
 
     res_batch_ref = allocate(line, [in_stock_batch, shipment_batch])
 
@@ -38,20 +38,18 @@ def test_allocate_can_allocate_earliest_batch() -> None:
 
 def test_allocate_cannot_allocate_batches() -> None:
     in_stock_batch = Batch(
-        reference=1,
+        reference="1",
         CKU="RETRO-CLOCK",
         purchased_quantity=5,
         ETA=None,
     )
     shipment_batch = Batch(
-        reference=2,
+        reference="2",
         CKU="RETRO-CLOCK",
         purchased_quantity=3,
         ETA=tomorrow,
     )
-    line = OrderLine(order_ref=1, CKU="RETRO-CLOCK", quantity=10)
+    line = OrderLine(order_ref="1", CKU="RETRO-CLOCK", quantity=10)
 
     with pytest.raises(OutOfStock, match="RETRO-CLOCK"):
         allocate(line, [in_stock_batch, shipment_batch])
-
-

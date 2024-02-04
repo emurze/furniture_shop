@@ -7,7 +7,8 @@ from modules.allocation.domain.models import OrderLine, Batch
 def allocate(line: OrderLine, batches: Sequence[Batch]) -> int:
     try:
         batch = next(
-            earliest_batch for earliest_batch in sorted(batches)
+            earliest_batch
+            for earliest_batch in sorted(batches)
             if earliest_batch.can_allocate(line)
         )
     except StopIteration:

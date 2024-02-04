@@ -3,6 +3,9 @@ from typing import Optional
 
 from pydantic import BaseModel, ConfigDict, Field
 
+from modules.allocation.domain.exceptions import \
+    BatchGtSupportedOnlyForBatchError
+
 
 class Model(BaseModel):
     model_config = ConfigDict(arbitrary_types_allowed=True)
@@ -19,11 +22,13 @@ class OrderLine(Model, frozen=True):
     def __eq__(self, other: object) -> bool:
         if not isinstance(other, OrderLine):
             return False
-        return all([
-            self.order_ref == other.order_ref,
-            self.CKU == other.CKU,
-            self.quantity == other.quantity
-        ])
+        return all(
+            [
+                self.order_ref == other.order_ref,
+                self.CKU == other.CKU,
+                self.quantity == other.quantity,
+            ]
+        )
 
 
 class Batch(Model):
@@ -65,10 +70,12 @@ class Batch(Model):
         return line in self.allocated_lines
 
     def can_allocate(self, line: OrderLine) -> bool:
-        return all([
-            self.available_quantity >= line.quantity,
-            line.CKU == self.CKU,
-        ])
+        return all(
+            [
+                self.available_quantity >= line.quantity,
+                line.CKU == self.CKU,
+            ]
+        )
 
     def deallocate(self, line: OrderLine) -> None:
         if self.is_allocated_line(line):

@@ -1,5 +1,4 @@
 from fastapi import FastAPI, Depends
-from fastapi.openapi.models import Response
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from api.config import config
@@ -12,8 +11,8 @@ app = FastAPI(
 )
 
 
-@app.get('/')
+@app.get("/")
 async def root(session: AsyncSession = Depends(get_session)) -> str:
     repository = Repository(session=session)
-    service = Service(repository)
+    _ = Service(repository)
     return "Hello World!"

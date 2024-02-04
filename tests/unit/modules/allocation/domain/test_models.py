@@ -9,16 +9,12 @@ BatchAndLine: TypeAlias = tuple[Batch, OrderLine]
 def make_line_and_batch(batch_qty: int, line_qty: int) -> BatchAndLine:
     return (
         Batch(
-            reference=1,
+            reference="1",
             CKU="RED CHAIR",
             purchased_quantity=batch_qty,
             eta=datetime.today(),
         ),
-        OrderLine(
-            order_ref=1,
-            CKU="RED CHAIR",
-            quantity=line_qty
-        )
+        OrderLine(order_ref="1", CKU="RED CHAIR", quantity=line_qty),
     )
 
 
@@ -29,8 +25,8 @@ def test_order_line_to_batch_allocation_reduces_available_quantity() -> None:
 
 
 def test_cannot_allocate_order_line_to_batch_different_sku() -> None:
-    batch = Batch(reference=1, CKU="BLUE CHAIR", purchased_quantity=10)
-    line = OrderLine(order_ref=5, CKU="RED CHAIR", quantity=4)
+    batch = Batch(reference="1", CKU="BLUE CHAIR", purchased_quantity=10)
+    line = OrderLine(order_ref="5", CKU="RED CHAIR", quantity=4)
     batch.allocate(line)
     assert batch.available_quantity == 10
 
@@ -68,11 +64,11 @@ def test_can_deallocate_line_from_batch() -> None:
 
 
 def test_batch_can_go_to_set() -> None:
-    batch = Batch(reference=1, CKU="BLUE CHAIR", purchased_quantity=10)
+    batch = Batch(reference="1", CKU="BLUE CHAIR", purchased_quantity=10)
     s = set()
     s.add(batch)
 
 
 def test_order_line_can_go_to_set() -> None:
-    line = OrderLine(order_ref=5, CKU="RED CHAIR", quantity=4)
+    line = OrderLine(order_ref="5", CKU="RED CHAIR", quantity=4)
     set(line)

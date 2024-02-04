@@ -1,0 +1,110 @@
+name: Furniture shop CI
+
+on: [push]
+
+env:
+  SECRET_KEY: ${{ secrets.SECRET_KEY }}
+  DEBUG: 1
+  LOGGING_LEVEL: DEBUG
+
+  DB_NAME: e-learning
+  DB_USER: e-learning
+  DB_PASSWORD: 12345678
+
+  POSTGRES_DB: furniture_shop
+  POSTGRES_USER: furniture_shop
+  POSTGRES_PASSWORD: 12345678
+
+jobs:
+  lint:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Set up Repository
+        uses: actions/checkout@v4
+
+      - name: Install Python 3.11
+        uses: actions/setup-python@v4
+        with:
+          python-version: 3.11
+
+      - name: Install flake8
+        run: |
+          pip install flake8
+
+      - name: Lint with flake8
+        run: |
+          make ci_lint
+
+  type-checks:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Set up Repository
+        uses: actions/checkout@v4
+
+      - name: Install Python 3.11
+        uses: actions/setup-python@v4
+        with:
+          python-version: 3.11
+
+      - name: Install flake8
+        run: |
+          pip install flake8
+
+      - name: Lint with flake8
+        run: |
+          make ci_typechecks
+
+  unit-tests:
+    needs: lint
+    runs-on: ubuntu-latest
+    steps:
+      - name: Set up Repository
+        uses: actions/checkout@v4
+
+      - name: Install Python 3.11
+        uses: actions/setup-python@v4
+        with:
+          python-version: 3.11
+
+      - name: Install flake8
+        run: |
+          pip install pytest
+
+      - name: Lint with flake8
+        run: |
+           make ci_unittests
+
+  integration-tests:
+    needs: unit-tests
+    runs-on: ubuntu-latest
+    services:
+      db:
+        image: postgres:13.0-alpine
+        ports:
+          - 5432:5432
+        env:
+          POSTGRES_DB: test_furniture_shop
+          POSTGRES_USER: test_adm1
+          POSTGRES_PASSWORD: 12345678
+    steps:
+      - name: Set up Repository
+        uses: actions/checkout@v4
+
+      - name: Install Python 3.11
+        uses: actions/setup-python@v4
+        with:
+          python-version: 3.11
+
+      - name: Install Poetry
+        run: |
+          pip install poetry==1.7.1
+          poetry config virtualenvs.create true
+          poetry config virtualenvs.in-project true
+
+      - name: Install Dependencies
+        run: |
+          poetry install
+
+      - name: Run Tests
+        run: |
+          make ci_integration_tests
