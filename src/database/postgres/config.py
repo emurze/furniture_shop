@@ -20,6 +20,3 @@ class PostgresConfig(BaseSettings):
                 path=self.db_name,
             )
         )
-
-
-config = PostgresConfig()
