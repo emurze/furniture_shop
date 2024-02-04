@@ -1,12 +1,14 @@
 # Variables
 
-DEFAULT_COLOR=\e[0m
+DEFAULT_COLOR = \e[0m
 
-BLUE=\e[34m
+BLUE = \e[34m
 
-YELLOW=\033[33m
+YELLOW = \033[33m
 
-DOCKER_CONTAINER_NAME=furniture_shop.api
+PROJECT_TITLE = furniture_shop
+
+DOCKER_CONTAINER_NAME = ${PROJECT_TITLE}.api
 
 
 # Functions
