@@ -9,3 +9,6 @@ from database.postgres.config import PostgresConfig
 class BaseConfig:
     app: AppConfig = field(default_factory=AppConfig)
     db: DatabaseConfig = field(default_factory=PostgresConfig)
+
+
+config = BaseConfig()

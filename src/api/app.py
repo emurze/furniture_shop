@@ -1,7 +1,7 @@
 from fastapi import FastAPI, Depends
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from api.config import config
+from api.config.base import config
 from api.database import get_session
 from modules.allocation.adapters.repository import Repository
 from modules.allocation.services.service import Service
