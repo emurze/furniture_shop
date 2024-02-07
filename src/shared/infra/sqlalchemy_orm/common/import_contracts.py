@@ -13,7 +13,10 @@ FILENAME = "db_contract.py"
 
 
 def import_contracts(directory: Path) -> list[Contract]:
-    assert directory.is_dir()
+    print(directory.cwd())
+    print(directory.parent.cwd())
+    print(directory.parent.parent.cwd())
+    print(directory.parent.parent.parent.cwd())
 
     _contracts = []
 
