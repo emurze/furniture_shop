@@ -12,13 +12,12 @@ PATH = "modules"
 FILENAME = "db_contract.py"
 
 
-def import_contracts(directory: str | Path) -> list[Contract]:
+def import_contracts(directory: Path) -> list[Contract]:
     _contracts = []
 
     print(os.system("ls -laF"))
     print(os.getcwd())
-    print(os.path.pardir)
-    print(directory)
+    print(directory.is_dir())
 
     for root, dirs, files in os.walk(directory):
         print(root, dirs, files)
