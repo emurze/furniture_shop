@@ -78,7 +78,7 @@ jobs:
           POSTGRES_PASSWORD: 12345678
 
     env:
-      WORKDIR: /home/runner/work/
+      WORKDIR: /work/
       TEST_DB_NAME: test_furniture_shop
       TEST_DB_USER: test_adm1
       TEST_DB_PASS: 12345678
