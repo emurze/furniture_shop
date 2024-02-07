@@ -1,3 +1,3 @@
 import os
 
-WORKDIR = os.getenv("WORKDIR")
+WORKDIR = os.getenv("WORKDIR", "")
