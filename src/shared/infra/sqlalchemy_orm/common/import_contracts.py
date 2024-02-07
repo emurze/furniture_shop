@@ -13,17 +13,10 @@ FILENAME = "db_contract.py"
 
 
 def import_contracts(directory: Path) -> list[Contract]:
-    print(directory)
-    print(directory.parent)
-
-    print(os.system("ls -laF src/modules"))
-
     _contracts = []
 
     for root, dirs, files in os.walk(directory):
-        print(root, dirs, files)
         for file in files:
-            print(file)
             if file == FILENAME:
                 module_name = cast(ModuleSpec, os.path.splitext(file)[0])
 
