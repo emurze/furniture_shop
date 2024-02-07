@@ -16,7 +16,7 @@ def import_contracts(directory: Path) -> list[Contract]:
     print(directory)
     print(directory.parent)
 
-    print(os.system("ls -laF /work/src/modules"))
+    print(os.system("ls -laF src/modules"))
 
     _contracts = []
 
