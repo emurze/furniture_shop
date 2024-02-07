@@ -8,7 +8,7 @@ from shared.infra.sqlalchemy_orm.common.config import WORKDIR
 from shared.infra.sqlalchemy_orm.common.ports import Contract
 
 SRC = Path(f"{WORKDIR}src")
-PATH = "modules/"
+PATH = "modules"
 FILENAME = "db_contract.py"
 
 
@@ -16,7 +16,7 @@ def import_contracts(directory: Path) -> list[Contract]:
     print(directory)
     print(directory.parent)
 
-    assert directory.is_dir()
+    print(os.system("ls -laF /work/src/modules"))
 
     _contracts = []
 
