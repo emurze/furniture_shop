@@ -1,3 +1,0 @@
-FROM postgres:16
-
-COPY create-test-user-and-database.sh /docker-entrypoint-initdb.d/

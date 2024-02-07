@@ -806,6 +806,22 @@ pluggy = ">=0.12,<2.0"
 testing = ["argcomplete", "attrs (>=19.2.0)", "hypothesis (>=3.56)", "mock", "nose", "pygments (>=2.7.2)", "requests", "setuptools", "xmlschema"]
 
 [[package]]
+name = "pytest-alembic"
+version = "0.10.7"
+description = "A pytest plugin for verifying alembic migrations."
+optional = false
+python-versions = ">=3.6,<4"
+files = [
+    {file = "pytest_alembic-0.10.7-py3-none-any.whl", hash = "sha256:69b7d756c26c07060734c9c346e2250f58f78ba5e6cdf4d8a5d2558a551c6348"},
+    {file = "pytest_alembic-0.10.7.tar.gz", hash = "sha256:19d256424684d6c83e31b2410b73f1a435799396241b155d54aa103836e4640f"},
+]
+
+[package.dependencies]
+alembic = "*"
+pytest = ">=6.0"
+sqlalchemy = "*"
+
+[[package]]
 name = "pytest-asyncio"
 version = "0.23.3"
 description = "Pytest support for asyncio"
@@ -985,4 +1001,4 @@ standard = ["colorama (>=0.4)", "httptools (>=0.5.0)", "python-dotenv (>=0.13)",
 [metadata]
 lock-version = "2.0"
 python-versions = "^3.11"
-content-hash = "6b72181216dfba20fbaed03aba343186c06a0a98ee85d63890df96e45921b89f"
+content-hash = "815b071e0338e5bccd4e85e537562ebb4b591af75e414ec8338b4c4a67a8fc77"

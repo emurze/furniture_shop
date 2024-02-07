@@ -27,23 +27,23 @@ run:
 # Migrations
 
 migrations:
-	$(call docker_exec,cd src && poetry run echo "hi")
+	$(call docker_exec,poetry run alembic revision --autogenerate)
 
 migrate:
-	$(call docker_exec,cd src && poetry run echo "hi")
+	$(call docker_exec,poetry run alembic upgrade head)
 
 
 # Restart | Down
 
 restart:
-	docker compose restart
+	docker compose down
+	docker compose up --build -d
 
 down:
 	docker compose down
 
 clean:
 	docker compose down -v
-
 
 
 # CI Tests
@@ -63,14 +63,8 @@ ci_integration_tests:
 
 # Tests
 
-
-isort:
-	poetry run isort
-
 black:
-	poetry run black . -l 79
-
-formatting: isort black
+	poetry run black . -l 79 tests src
 
 lint:
 	poetry run flake8 --config setup.cfg src tests
@@ -79,12 +73,18 @@ typechecks:
 	poetry run mypy --config setup.cfg src tests
 
 unittests:
-	poetry run pytest -s tests/unit
+	poetry run pytest -s -v tests/unit
 
 integration_tests:
-	$(call docker_exec,poetry run pytest -s tests/integration)
+	$(call docker_exec,cd tests/integration && poetry run pytest -s -v .)
 
 
 # todo: add coverage
 
 test: lint typechecks unittests integration_tests
+
+
+git_add_all:
+	git add .
+
+pre-commit: black git_add_all restart test

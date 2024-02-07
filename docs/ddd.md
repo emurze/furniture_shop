@@ -41,6 +41,86 @@ class OrderLine(BaseModel, frozen=True):
         ])
 ```
 
-
 * ```__gt__``` for using in sorted() without key
 
+# Domain Model and Repository
+
+### Mapper
+
+```python
+def start_mapper() -> None:
+    mapped_registry.map_imperatively(Post, table)
+```
+
+### Repository
+
+* is memory, think so
+  * no .save()
+  * .commit() is delegated to a call side
+
+* methods
+  * .add()
+  * .get()
+  * .list()
+
+* delete to obj.cancel()
+
+* update to a Unit Of Work pattern
+
+```python
+@dataclass(frozen=True, slots=True)
+class PostRepository(IPostRepository):
+    session: AsyncSession
+
+    def add(self, obj: Post) -> None:
+        self.session.add(obj)
+
+    async def get(self, **kw) -> Post:
+        query = (
+            select(Post)
+            .filter_by(**kw)
+        )
+        res = await self.session.execute(query)
+        return res.scalars().one()
+
+    async def list(self) -> tuple[Post, ...]:
+        res = await self.session.execute(select(Post))
+        return tuple(res.scalars().all())
+
+
+class FakePostRepository(IPostRepository):
+    def __init__(self, posts: Iterable[Post]) -> None:
+        self._posts = set(posts)
+
+    def add(self, obj: Post) -> None:
+        self._posts.add(obj)
+
+    async def get(self, **kw) -> Post:
+        return next(post for post in self._posts if post.validate_dict(**kw))
+
+    async def list(self) -> tuple[Post, ...]:
+        return tuple(self._posts)
+```
+
+### Pros
+
+1. We focus to a business logic
+    * Test -> business logic -> infra test -> infra changes + migration
+    * Is not django where - infra test -> infra changes + migration -> test -> business logic  
+
+2. Easy testing
+
+3. No dependencies on infrastructure
+
+### Cons
+
+1. More difficult infra code, sometimes it requires you to change domain model
+
+2. Extra code for repository
+
+### Notes
+
+1. Reusable repository requires only 1 set of tests
+   * future tests for it will be small
+
+2. Not always you need all of it like when you have a simple CRUD.

@@ -12,6 +12,7 @@ ENV POETRY_NO_INTERACTION=1 \
 
 WORKDIR /service/
 
+COPY alembic.ini .
 COPY poetry.lock .
 COPY pyproject.toml .
 COPY setup.cfg .

@@ -137,3 +137,7 @@ config = BaseConfig(
     webapi=get_webapi(),
 )
 ```
+
+```python
+Behavior pattern, return next(gen)
+```

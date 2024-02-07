@@ -332,3 +332,27 @@ class Post2:
 
 mapped_registry.map_imperatively(Post2, post2)
 ```
+
+
+### Attached to a different loop problem
+
+Default Queue class .acquire(), .release() for many reused connections
+
+* engine (connection pool) is queue with shared connections 
+
+* task1 (own loop) -> takes a conn, execute this conn
+
+* test2 (own loop) -> takes the conn, execute this conn
+
+  ```error (Future pending) attached to a different loop```
+
+
+#### Solution is to use NullPool
+
+NullPool class returns always a new connection
+
+* create_async_engine(dsn, poolclass=NullPool)
+
+* task1 (own loop) -> takes a new conn, execute this conn
+
+* task2 (own loop) -> takes a new conn, execute this conn
