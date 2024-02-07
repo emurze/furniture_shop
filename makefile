@@ -14,6 +14,10 @@ DOCKER_CONTAINER_NAME = ${PROJECT_TITLE}.api
 # Functions
 
 define docker_exec
+	docker exec -it ${DOCKER_CONTAINER_NAME} bash -c "$(1)"
+endef
+
+define docker_row_exec
 	docker exec ${DOCKER_CONTAINER_NAME} bash -c "$(1)"
 endef
 
@@ -22,18 +26,6 @@ endef
 
 run:
 	docker compose up --build
-
-
-# Migrations
-
-migrations:
-	$(call docker_exec,poetry run alembic revision --autogenerate)
-
-migrate:
-	$(call docker_exec,poetry run alembic upgrade head)
-
-
-# Restart | Down
 
 restart:
 	docker compose down
@@ -44,6 +36,15 @@ down:
 
 clean:
 	docker compose down -v
+
+
+# Migrations
+
+migrations:
+	$(call docker_exec,poetry run alembic revision --autogenerate)
+
+migrate:
+	$(call docker_exec,poetry run alembic upgrade head)
 
 
 # CI Tests
@@ -79,12 +80,17 @@ integration_tests:
 	$(call docker_exec,cd tests/integration && poetry run pytest -s -v .)
 
 
-# todo: add coverage
-
 test: lint typechecks unittests integration_tests
 
+
+# CLI
+
+cli_integration_tests:
+	$(call docker_row_exec,cd tests/integration && poetry run pytest -s -v .)
+
+cli_test: lint typechecks unittests cli_integration_tests
 
 git_add_all:
 	git add .
 
-pre-commit: black git_add_all restart test
+pre-commit: black git_add_all restart cli_test
