@@ -18,7 +18,9 @@ def import_contracts(directory: str | Path) -> list[Contract]:
     print(directory)
 
     for root, dirs, files in os.walk(directory):
+        print(root, dirs, files)
         for file in files:
+            print(file)
             if file == FILENAME:
                 module_name = cast(ModuleSpec, os.path.splitext(file)[0])
 
