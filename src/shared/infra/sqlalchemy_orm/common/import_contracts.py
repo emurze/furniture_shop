@@ -15,6 +15,8 @@ FILENAME = "db_contract.py"
 def import_contracts(directory: str | Path) -> list[Contract]:
     _contracts = []
 
+    print(directory)
+
     for root, dirs, files in os.walk(directory):
         for file in files:
             if file == FILENAME:
