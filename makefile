@@ -83,7 +83,7 @@ integration_tests:
 test: lint typechecks unittests integration_tests
 
 
-# CLI
+# CLI Tests
 
 cli_integration_tests:
 	$(call docker_row_exec,cd tests/integration && poetry run pytest -s -v .)
