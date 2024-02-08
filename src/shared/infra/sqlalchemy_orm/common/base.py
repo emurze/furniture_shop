@@ -3,7 +3,7 @@ from collections.abc import Iterable
 from sqlalchemy import MetaData
 
 from shared.infra.sqlalchemy_orm.common.ports import Contract
-from shared.utils.combine_metadata import combine_metadata
+from shared.infra.sqlalchemy_orm.utils.combine_metadata import combine_metadata
 
 
 class Base:

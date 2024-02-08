@@ -1,8 +1,9 @@
-import importlib.util
 import os
+import importlib.util
+from typing import cast
+
 from importlib._bootstrap import ModuleSpec  # noqa
 from pathlib import Path
-from typing import cast
 
 from shared.infra.sqlalchemy_orm.common.ports import Contract
 
