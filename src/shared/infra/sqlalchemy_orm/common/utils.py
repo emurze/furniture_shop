@@ -4,20 +4,15 @@ from importlib._bootstrap import ModuleSpec  # noqa
 from pathlib import Path
 from typing import cast
 
-from shared.infra.sqlalchemy_orm.common.config import WORKDIR
 from shared.infra.sqlalchemy_orm.common.ports import Contract
 
-SRC = Path(f"{WORKDIR}src")
-PATH = "modules"
-FILENAME = "db_contract.py"
 
-
-def import_contracts(directory: Path) -> list[Contract]:
+def import_contracts(directory: Path, filename: str) -> list[Contract]:
     _contracts = []
 
     for root, dirs, files in os.walk(directory):
         for file in files:
-            if file == FILENAME:
+            if file == filename:
                 module_name = cast(ModuleSpec, os.path.splitext(file)[0])
 
                 spec = cast(
@@ -34,6 +29,3 @@ def import_contracts(directory: Path) -> list[Contract]:
                 _contracts.append(module.contract)
 
     return _contracts
-
-
-contracts = import_contracts(SRC / PATH)

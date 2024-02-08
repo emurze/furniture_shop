@@ -15,6 +15,7 @@ services:
     volumes:
       - ./src:/service/src
       - ./tests:/service/tests
+      - ./migrations:/service/migrations
     restart: unless-stopped
     depends_on:
       - db

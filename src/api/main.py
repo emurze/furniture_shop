@@ -13,4 +13,9 @@ app = FastAPI(
 app.include_router(posts_router)
 
 
+@app.get("/")
+async def root():
+    return str(base.metadata.tables)
+
+
 # @app.on_event("startup")
