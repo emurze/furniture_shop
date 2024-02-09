@@ -5,7 +5,7 @@ from logging.config import fileConfig
 from alembic import context
 from sqlalchemy import engine_from_config, pool
 
-sys.path.insert(1, os.path.join(sys.path[0], "../src"))
+sys.path.insert(1, os.path.join(sys.path[0], "src"))
 
 from shared.infra.sqlalchemy_orm.base import base  # noqa
 from shared.infra.sqlalchemy_orm.db import db_config  # noqa

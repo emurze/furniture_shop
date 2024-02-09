@@ -5,7 +5,7 @@ from typing import cast
 from importlib._bootstrap import ModuleSpec  # noqa
 from pathlib import Path
 
-from shared.infra.sqlalchemy_orm.common.ports import Contract
+from shared.infra.sqlalchemy_orm.core.ports import Contract
 
 
 def import_contracts(directory: Path, filename: str) -> list[Contract]:

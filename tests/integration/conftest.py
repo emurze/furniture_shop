@@ -9,16 +9,15 @@ from sqlalchemy.ext.asyncio import (
 )
 
 from shared.infra.sqlalchemy_orm.base import base
-from shared.utils.suppress_echo import suppress_echo
+from shared.infra.sqlalchemy_orm.utils import suppress_echo
 
-from tests.config import db_config
+from tests.integration.config import db_config
 
 base.run_mappers()
-print(base.mappers)
 
 db_dsn = db_config.get_dsn()
 async_engine = create_async_engine(db_dsn, echo=True, poolclass=NullPool)
-async_session_maker = async_sessionmaker(async_engine, autobegin=True)
+async_session_maker = async_sessionmaker(async_engine, expire_on_commit=False)
 
 
 @pytest.fixture(scope="session", autouse=True)
@@ -29,7 +28,12 @@ async def prepare_database() -> None:
 
     async with async_engine.begin() as conn:
         async with suppress_echo(async_engine):
-            await conn.run_sync(base.metadata.drop_all)
+            for table in base.metadata.sorted_tables:
+                sanitized_table_name: ColumnClause = literal_column(table.name)
+                stmt = text(
+                    f"DROP TABLE IF EXISTS {sanitized_table_name} CASCADE"
+                )
+                await conn.execute(stmt)
 
         await conn.run_sync(base.metadata.create_all)
 
@@ -41,9 +45,9 @@ async def clean_tables() -> None:
     """
 
     async with async_session_maker() as session:
-        for table_name, _ in base.metadata.tables.items():
-            sanitized_table_name: ColumnClause = literal_column(table_name)
-            stmt = text(f"TRUNCATE TABLE {sanitized_table_name}")
+        for table in base.metadata.sorted_tables:
+            sanitized_table_name: ColumnClause = literal_column(table.name)
+            stmt = text(f"TRUNCATE TABLE {sanitized_table_name} CASCADE")
             await session.execute(stmt)
 
         await session.commit()

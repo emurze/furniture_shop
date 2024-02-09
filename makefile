@@ -77,7 +77,7 @@ unittests:
 	poetry run pytest -s -v tests/unit
 
 integration_tests:
-	$(call docker_exec,cd tests/integration && poetry run pytest -s -v .)
+	$(call docker_exec,cd tests/integration && poetry run pytest -s -vv .)
 
 
 test: lint typechecks unittests integration_tests

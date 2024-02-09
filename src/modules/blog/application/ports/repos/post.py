@@ -1,6 +1,6 @@
 import abc
 
-from modules.posts.domain.models import Post
+from modules.blog.domain.entities.post import Post
 
 
 class IPostRepository(abc.ABC):
@@ -9,9 +9,13 @@ class IPostRepository(abc.ABC):
         ...
 
     @abc.abstractmethod
-    async def get(self, **kwargs) -> Post:
+    async def get(self, **kw) -> Post:
         ...
 
     @abc.abstractmethod
     async def list(self) -> tuple[Post, ...]:
+        ...
+
+    @abc.abstractmethod
+    async def get_with_publisher(self) -> Post:
         ...

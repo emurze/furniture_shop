@@ -2,7 +2,7 @@ from fastapi import APIRouter
 
 from api.routes.v1.posts.schema import PostRead
 
-posts_router = APIRouter(prefix="/posts", tags=["posts"])
+posts_router = APIRouter(prefix="/blog", tags=["blog"])
 
 
 @posts_router.get("/", response_model=list[PostRead])
