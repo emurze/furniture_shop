@@ -17,5 +17,5 @@ class IPostRepository(abc.ABC):
         ...
 
     @abc.abstractmethod
-    async def get_with_publisher(self) -> Post:
+    async def get_with_publisher(self, **kw) -> Post:
         ...

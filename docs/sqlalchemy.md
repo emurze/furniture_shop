@@ -305,11 +305,9 @@ class Post2(Base):
 ```python
 mapped_registry = registry()
 
-post2_metadata = MetaData()
-
 post2 = Table(
     "post2",
-    post2_metadata,
+    mapped_registry.metadata,
     Column("id", Integer, primary_key=True),
     Column("title", String),
     Column("created_at", DateTime,
@@ -356,3 +354,64 @@ NullPool class returns always a new connection
 * task1 (own loop) -> takes a new conn, execute this conn
 
 * task2 (own loop) -> takes a new conn, execute this conn
+
+### Use sorted_tables, they are sorted by FK constraint
+
+### RelationShip
+
+1. Create 2 attributes for each domain
+
+2. Set relationship in property
+
+```python
+# 1
+
+class Post:
+    publisher: ClassVar[Any]
+
+
+class Publisher:
+    posts: ClassVar[list[Post]]
+
+
+# 2
+    
+def start_mapper() -> None:
+    post_mapper = mapper_registry.map_imperatively(Post, post_table)
+    mapper_registry.map_imperatively(
+        Publisher,
+        publisher_table,
+        properties={
+            "posts": relationship(
+                post_mapper,
+                backref="publisher",
+            )
+        },
+    )
+```
+
+### ORM optimization tools
+
+1. joinedload
+
+2. 
+
+3. .unique() is python specific 
+
+```python
+class PublisherRepository(
+    SQLAlchemyRepositoryMixin[Publisher],
+    IPublisherRepository,
+):
+    model = Publisher
+
+    async def get_with_posts(self, **kw) -> Publisher:
+        publisher_posts = cast(Any, Publisher.posts)
+        query = (
+            select(Publisher)
+            .options(joinedload(publisher_posts))
+            .filter_by(**kw)
+        )
+        res = await self.session.execute(query)
+        return res.unique().scalars().one()
+```

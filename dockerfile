@@ -16,10 +16,10 @@ COPY alembic.ini .
 COPY poetry.lock .
 COPY pyproject.toml .
 COPY setup.cfg .
+COPY makefile .
 
 RUN poetry install --no-root && rm -rf $POETRY_CACHE_DIR
 
-COPY migrations migrations
 COPY src src
 COPY tests tests
 

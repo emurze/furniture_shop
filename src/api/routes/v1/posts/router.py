@@ -1,6 +1,6 @@
 from fastapi import APIRouter
 
-from api.routes.v1.posts.schema import PostRead
+from modules.blog.application.dtos.post import PostRead
 
 posts_router = APIRouter(prefix="/blog", tags=["blog"])
 

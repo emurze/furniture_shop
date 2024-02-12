@@ -1,13 +1,4 @@
-from modules.blog.domain.entities.post import Post
-from modules.blog.domain.entities.publisher import Publisher
 from tests.unit.modules.blog.entities.conftest import make_publisher_and_post
-
-
-def test_publish() -> None:
-    publisher = Publisher(id=1, name="Vlad", city="Lersk")
-    post = Post(id=1, title="Post 1", content="text")
-    publisher.publish(post)
-    assert post.publisher_id == 1
 
 
 def test_to_draft() -> None:

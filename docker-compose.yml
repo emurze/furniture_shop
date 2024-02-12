@@ -5,7 +5,9 @@ services:
     image: api:v1
     container_name: furniture_shop.api
     command:
-      bash -c "cd src && poetry run uvicorn --host 0.0.0.0 --port 8080 api.main:app --reload"
+      bash -c "make row-migrate &&
+               cd src &&
+               poetry run uvicorn --host 0.0.0.0 --port 8080 api.app:app --reload"
     networks:
       - backend
     ports:
@@ -15,7 +17,6 @@ services:
     volumes:
       - ./src:/service/src
       - ./tests:/service/tests
-      - ./migrations:/service/migrations
     restart: unless-stopped
     depends_on:
       - db

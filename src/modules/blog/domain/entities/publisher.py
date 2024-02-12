@@ -1,4 +1,4 @@
-from dataclasses import dataclass, field
+from dataclasses import dataclass
 from typing import ClassVar
 
 from modules.blog.domain.entities.post import Post
@@ -9,11 +9,7 @@ class Publisher:
     id: int
     name: str
     city: str
-
     posts: ClassVar[list[Post]]
-
-    def publish(self, post: Post) -> None:
-        post.publisher_id = self.id
 
     @staticmethod
     def edit(post: Post, **kwargs) -> None:

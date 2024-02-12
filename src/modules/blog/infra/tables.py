@@ -16,7 +16,6 @@ post_table = sa.Table(
         "publisher_id",
         sa.Integer,
         sa.ForeignKey("publisher.id", ondelete="CASCADE"),
-        nullable=True,
     ),
     sa.Column("draft", sa.Boolean, default=False),
 )
@@ -31,14 +30,24 @@ publisher_table = sa.Table(
 
 
 def start_mapper() -> None:
-    post_mapper = mapper_registry.map_imperatively(Post, post_table)
+    mapper_registry.map_imperatively(
+        Post,
+        post_table,
+        properties={
+            "publisher": relationship(
+                Publisher,
+                back_populates="posts",
+                innerjoin=True,
+            )
+        },
+    )
     mapper_registry.map_imperatively(
         Publisher,
         publisher_table,
         properties={
             "posts": relationship(
-                post_mapper,
-                backref="publisher",
+                Post,
+                back_populates="publisher",
             )
         },
     )

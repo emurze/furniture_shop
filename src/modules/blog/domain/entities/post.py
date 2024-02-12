@@ -9,7 +9,6 @@ class Post:
     content: str
     publisher_id: int | None = None
     draft: bool = False
-
     publisher: ClassVar[Any]
 
     def validate_dict(self, **kwargs) -> bool:

@@ -46,21 +46,8 @@ migrations:
 migrate:
 	$(call docker_exec,poetry run alembic upgrade head)
 
-
-# CI Tests
-
-ci_lint:
-	flake8 --config setup.cfg src tests
-
-ci_typechecks:
-	mypy --config setup.cfg src tests
-
-ci_unittests:
-	pytest -s tests/unit
-
-ci_integration_tests:
-	poetry run pytest -s tests/integration
-
+row-migrate:
+	poetry run alembic upgrade head
 
 # Tests
 
@@ -83,14 +70,29 @@ integration_tests:
 test: lint typechecks unittests integration_tests
 
 
+# CI Tests
+
+ci_lint:
+	flake8 --config setup.cfg src tests
+
+ci_typechecks:
+	mypy --config setup.cfg src tests
+
+ci_unittests:
+	pytest -s tests/unit
+
+ci_integration_tests:
+	poetry run pytest -s tests/integration
+
+
 # CLI Tests
 
 cli_integration_tests:
 	$(call docker_row_exec,cd tests/integration && poetry run pytest -s -v .)
 
-cli_test: lint typechecks unittests cli_integration_tests
+cli_test: lint typechecks unittests restart cli_integration_tests
 
 git_add_all:
 	git add .
 
-pre-commit: black git_add_all restart cli_test
+pre-commit: black git_add_all cli_test

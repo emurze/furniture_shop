@@ -9,7 +9,9 @@ from shared.infra.sqlalchemy_orm.utils import SQLAlchemyRepositoryMixin
 class PostRepository(SQLAlchemyRepositoryMixin[Post], IPostRepository):
     model = Post
 
-    async def get_with_publisher(self) -> Post:
-        query = select(Post).options(joinedload(Post.publisher))
+    async def get_with_publisher(self, **kw) -> Post:
+        query = (
+            select(Post).options(joinedload(Post.publisher)).filter_by(**kw)
+        )
         post = await self.session.execute(query)
-        return post.unique().scalars().one()
+        return post.scalars().one()

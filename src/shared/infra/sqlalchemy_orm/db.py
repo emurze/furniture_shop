@@ -6,9 +6,7 @@ from sqlalchemy.ext.asyncio import (
     create_async_engine,
 )
 
-from shared.infra.sqlalchemy_orm.config.db import DatabaseConfig
-
-db_config = DatabaseConfig()
+from shared.infra.sqlalchemy_orm.database.config import db_config
 
 async_engine = create_async_engine(db_config.get_dsn())
 async_session_maker = async_sessionmaker(async_engine)

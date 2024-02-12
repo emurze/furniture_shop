@@ -18,3 +18,6 @@ class DatabaseConfig(BaseSettings):
             self.db_port,
             self.db_name,
         )
+
+
+db_config = DatabaseConfig()

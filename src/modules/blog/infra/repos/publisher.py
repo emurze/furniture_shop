@@ -1,7 +1,7 @@
 from typing import cast, Any
 
 from sqlalchemy import select
-from sqlalchemy.orm import joinedload
+from sqlalchemy.orm import selectinload
 
 from modules.blog.application.ports.repos.publisher import IPublisherRepository
 from modules.blog.domain.entities.publisher import Publisher
@@ -18,8 +18,9 @@ class PublisherRepository(
         publisher_posts = cast(Any, Publisher.posts)
         query = (
             select(Publisher)
-            .options(joinedload(publisher_posts))
+            .options(selectinload(publisher_posts))
             .filter_by(**kw)
         )
+
         res = await self.session.execute(query)
-        return res.unique().scalars().one()
+        return res.scalars().one()
