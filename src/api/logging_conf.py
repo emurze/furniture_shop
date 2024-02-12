@@ -2,9 +2,7 @@ import logging
 
 from api.config import app_config
 
-LOG_FORMAT = (
-    "%(levelname)s [%(module)s.%(funcName)s:%(lineno)d]:     " "%(message)s"
-)
+LOG_FORMAT = "%(levelname)s  [%(module)s.%(funcName)s:%(lineno)d] %(message)s"
 
 
 def configure_logging() -> None:

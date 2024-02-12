@@ -51,3 +51,55 @@ TEST_POSTGRES_PASSWORD = 12345678
 PGADMIN_DEFAULT_EMAIL = adm1@adm1.com
 PGADMIN_DEFAULT_PASSWORD = 12345678
 ```
+
+### How to run project?
+
+Run project
+```
+make run
+```
+
+Restart project without cleaning
+```
+make restart
+```
+
+Down project
+```
+make down
+```
+
+Down project and clean data from database
+```
+make clean
+```
+
+
+
+### How to test project?
+
+Run linter
+```
+make lint
+```
+
+Run type checks
+```
+make typechecks
+```
+
+Run unit tests in the container
+```
+make unittests
+```
+
+Run integration tests in the container
+```
+make integration_tests
+```
+
+Run entire test cycle
+```
+make test
+```
+

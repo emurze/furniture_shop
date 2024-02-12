@@ -1,3 +1,5 @@
+import logging
+
 from fastapi import FastAPI
 
 from api.logging_conf import configure_logging
@@ -13,9 +15,12 @@ app = FastAPI(
 app.include_router(posts_router)
 
 
+lg = logging.getLogger(__name__)
+
+
 @app.get("/")
-async def root():
-    return str(base.metadata.tables)
+async def root() -> None:
+    lg.info(base.metadata.tables)
 
 
 # @app.on_event("startup")
