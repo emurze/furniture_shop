@@ -59,6 +59,7 @@ jobs:
         run: |
           pip install pytest
           pip install pydantic
+          pip install sqlalchemy
 
       - name: Run Tests
         run: |
