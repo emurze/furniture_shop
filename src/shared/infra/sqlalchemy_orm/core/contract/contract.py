@@ -2,7 +2,7 @@ from collections.abc import Callable
 from dataclasses import dataclass
 from typing import Optional
 
-from sqlalchemy import MetaData
+from shared.infra.sqlalchemy_orm.core.contract.ports import MetaData
 
 
 @dataclass(frozen=True, slots=True)
