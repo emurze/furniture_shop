@@ -1,11 +1,11 @@
 import pytest
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from modules.blog.application.ports.repos.post import IPostRepository
-from modules.blog.application.ports.repos.publisher import IPublisherRepository
+from modules.blog.application.ports.post.repo import IPostRepository
+from modules.blog.application.ports.publisher.repo import IPublisherRepository
 from modules.blog.domain.entities.post import Post
 from modules.blog.domain.entities.publisher import Publisher
-from modules.blog.infra.repos.post import PostRepository
+from modules.blog.infra.repos.post.sqlalchemy import PostRepository
 from modules.blog.infra.repos.publisher import PublisherRepository
 
 from tests.integration.conftest import async_session_maker

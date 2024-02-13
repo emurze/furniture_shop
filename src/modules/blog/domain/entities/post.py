@@ -7,9 +7,12 @@ class Post:
     id: int
     title: str
     content: str
-    publisher_id: int | None = None
+    publisher_id: int
     draft: bool = False
     publisher: ClassVar[Any]
+
+    def __hash__(self) -> int:
+        return hash(id)
 
     def validate_dict(self, **kwargs) -> bool:
         return all(

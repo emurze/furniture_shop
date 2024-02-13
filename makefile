@@ -66,8 +66,10 @@ unittests:
 integration_tests:
 	$(call docker_exec,cd tests/integration && poetry run pytest -s -vv .)
 
+e2e_tests:
+	$(call docker_exec,cd tests/e2e && poetry run pytest -s -vv .)
 
-test: lint typechecks unittests integration_tests
+test: lint typechecks unittests integration_tests e2e_tests
 
 
 # CI Tests

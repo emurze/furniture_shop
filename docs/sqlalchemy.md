@@ -392,11 +392,11 @@ def start_mapper() -> None:
 
 ### ORM optimization tools
 
-1. joinedload
+1. joinedload for OneToOne and ManyToOne
 
-2. 
+2. selectinload for OneToMany and ManyToMany
 
-3. .unique() is python specific 
+3. Crutch .unique() is python specific solution for bad used joinedload
 
 ```python
 class PublisherRepository(
@@ -409,9 +409,17 @@ class PublisherRepository(
         publisher_posts = cast(Any, Publisher.posts)
         query = (
             select(Publisher)
-            .options(joinedload(publisher_posts))
+            .options(selectinload(publisher_posts))
             .filter_by(**kw)
         )
         res = await self.session.execute(query)
-        return res.unique().scalars().one()
+        return res.scalars().one()
 ```
+
+1. Try .append() for relationship, or use set with .add() ???
+
+2. __table_args__ for Indexes, Constraints ???
+
+3. relationship(secondary=TableName), ManyToMany ???
+
+4. contains_eager ???

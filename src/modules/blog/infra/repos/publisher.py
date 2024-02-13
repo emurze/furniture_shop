@@ -3,7 +3,7 @@ from typing import cast, Any
 from sqlalchemy import select
 from sqlalchemy.orm import selectinload
 
-from modules.blog.application.ports.repos.publisher import IPublisherRepository
+from modules.blog.application.ports.publisher.repo import IPublisherRepository
 from modules.blog.domain.entities.publisher import Publisher
 from shared.infra.sqlalchemy_orm.utils import SQLAlchemyRepositoryMixin
 

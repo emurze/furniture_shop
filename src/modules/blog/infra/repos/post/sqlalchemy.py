@@ -1,7 +1,8 @@
 from sqlalchemy import select
+
 from sqlalchemy.orm import joinedload
 
-from modules.blog.application.ports.repos.post import IPostRepository
+from modules.blog.application.ports.post.repo import IPostRepository
 from modules.blog.domain.entities.post import Post
 from shared.infra.sqlalchemy_orm.utils import SQLAlchemyRepositoryMixin
 
