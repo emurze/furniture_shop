@@ -11,6 +11,9 @@ class Publisher:
     city: str
     posts: ClassVar[list[Post]]
 
+    def __hash__(self) -> int:
+        return hash(self.id)
+
     @staticmethod
     def edit(post: Post, **kwargs) -> None:
         for key, value in kwargs.items():

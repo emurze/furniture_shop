@@ -6,7 +6,7 @@ from modules.blog.application.ports.publisher.repo import IPublisherRepository
 from modules.blog.domain.entities.post import Post
 from modules.blog.domain.entities.publisher import Publisher
 from modules.blog.infra.repos.post.sqlalchemy import PostRepository
-from modules.blog.infra.repos.publisher import PublisherRepository
+from modules.blog.infra.repos.publisher.sqlalchemy import PublisherRepository
 
 from tests.integration.conftest import async_session_maker
 

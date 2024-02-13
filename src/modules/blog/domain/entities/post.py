@@ -12,7 +12,7 @@ class Post:
     publisher: ClassVar[Any]
 
     def __hash__(self) -> int:
-        return hash(id)
+        return hash(self.id)
 
     def validate_dict(self, **kwargs) -> bool:
         return all(
