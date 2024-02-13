@@ -23,6 +23,7 @@ pydantic-settings = "^2.1.0"
 isort = "^5.13.2"
 pytest-alembic = "^0.10.7"
 httpx = "^0.26.0"
+dependency-injector = "^4.41.0"
 
 
 [build-system]

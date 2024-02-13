@@ -1,5 +1,5 @@
 from collections.abc import Sequence
-from typing import TypeVar, Generic
+from typing import TypeVar
 
 from shared.infra.sqlalchemy_orm.utils.repos.port import IBaseRepository
 

@@ -5,7 +5,7 @@ from sqlalchemy.orm import selectinload
 
 from modules.blog.application.ports.publisher.repo import IPublisherRepository
 from modules.blog.domain.entities.publisher import Publisher
-from shared.infra.sqlalchemy_orm.utils import SQLAlchemyRepositoryMixin
+from shared.infra.sqlalchemy_orm.repo import SQLAlchemyRepositoryMixin
 
 
 class PublisherRepository(
