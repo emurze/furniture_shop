@@ -9,7 +9,7 @@ from sqlalchemy.ext.asyncio import (
 )
 
 from shared.infra.sqlalchemy_orm.base import base
-from shared.infra.sqlalchemy_orm.utils import suppress_echo
+from shared.infra.sqlalchemy_orm.utils.helpers import suppress_echo
 
 from tests.integration.config import db_config
 
