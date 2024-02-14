@@ -1,7 +1,7 @@
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from modules.blog.domain.entities.post import Post
-from tests.integration.modules.blog.conftest import (
+from tests.slow.integration.modules.blog.conftest import (
     make_publisher_and_post,
     get_pub_repo,
     get_post_repo,

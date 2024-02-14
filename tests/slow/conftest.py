@@ -8,16 +8,25 @@ from sqlalchemy.ext.asyncio import (
     create_async_engine,
 )
 
+from api.main import app
 from shared.infra.sqlalchemy_orm.base import base
+from shared.infra.sqlalchemy_orm.db import get_session
 from shared.infra.sqlalchemy_orm.utils.helpers import suppress_echo
+from tests.slow.config import db_config
 
-from tests.integration.config import db_config
+
+async def get_test_session() -> AsyncIterator[AsyncSession]:
+    async with async_session_maker() as session:
+        yield session
+
 
 base.run_mappers()
 
 db_dsn = db_config.get_dsn()
 async_engine = create_async_engine(db_dsn, echo=True, poolclass=NullPool)
 async_session_maker = async_sessionmaker(async_engine, expire_on_commit=False)
+
+app.dependency_overrides[get_session] = get_test_session  # noqa
 
 
 @pytest.fixture(scope="session", autouse=True)
@@ -51,9 +60,3 @@ async def clean_tables() -> None:
             await session.execute(stmt)
 
         await session.commit()
-
-
-@pytest.fixture
-async def session() -> AsyncIterator[AsyncSession]:
-    async with async_session_maker() as session:
-        yield session

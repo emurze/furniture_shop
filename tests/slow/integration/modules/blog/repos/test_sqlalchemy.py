@@ -3,7 +3,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 
 from modules.blog.domain.entities.post import Post
 from modules.blog.domain.entities.publisher import Publisher
-from tests.integration.modules.blog.conftest import get_post_repo
+from tests.slow.integration.modules.blog.conftest import get_post_repo
 
 
 async def test_repo_add(session: AsyncSession, pub: Publisher) -> None:

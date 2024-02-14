@@ -9,12 +9,6 @@ routes = (
 )
 
 
-def get_app(_routes: tuple | list = routes) -> FastAPI:
-    app = FastAPI(
-        title="Sample",
-    )
-
+def set_routes(app: FastAPI, _routes: tuple | list = routes) -> None:
     for route in _routes:
         app.include_router(route)
-
-    return app

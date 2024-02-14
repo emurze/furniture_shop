@@ -1,6 +1,6 @@
 from modules.blog.application.usecases.post.get_post import GetPostUseCase
 from modules.blog.domain.entities.post import Post
-from modules.blog.infra.repos.post.fake import PostFakeRepository
+from tests.unit.fakes.post.repo import PostFakeRepository
 
 
 async def test_can_return_post() -> None:

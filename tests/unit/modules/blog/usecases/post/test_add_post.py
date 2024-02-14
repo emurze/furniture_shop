@@ -1,6 +1,6 @@
 from modules.blog.application.usecases.post.add_post import AddPostUseCase
 from modules.blog.domain.entities.post import Post
-from modules.blog.infra.repos.post.fake import PostFakeRepository
+from tests.unit.fakes.post.repo import PostFakeRepository
 
 
 async def test_can_add_post() -> None:

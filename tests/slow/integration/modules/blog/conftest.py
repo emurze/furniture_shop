@@ -7,8 +7,7 @@ from modules.blog.domain.entities.post import Post
 from modules.blog.domain.entities.publisher import Publisher
 from modules.blog.infra.repos.post.sqlalchemy import PostRepository
 from modules.blog.infra.repos.publisher.sqlalchemy import PublisherRepository
-
-from tests.integration.conftest import async_session_maker
+from tests.slow.conftest import async_session_maker
 
 
 def get_post_repo(session: AsyncSession) -> IPostRepository:

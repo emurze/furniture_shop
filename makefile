@@ -49,6 +49,7 @@ migrate:
 row-migrate:
 	poetry run alembic upgrade head
 
+
 # Tests
 
 black:
@@ -64,10 +65,10 @@ unittests:
 	poetry run pytest -s -v tests/unit
 
 integration_tests:
-	$(call docker_exec,cd tests/integration && poetry run pytest -s -vv .)
+	$(call docker_exec,cd tests/slow/integration && poetry run pytest -s -vv .)
 
 e2e_tests:
-	$(call docker_exec,cd tests/e2e && poetry run pytest -s -vv .)
+	$(call docker_exec,cd tests/slow/e2e && poetry run pytest -s -vv .)
 
 test: lint typechecks unittests integration_tests e2e_tests
 
@@ -84,15 +85,21 @@ ci_unittests:
 	pytest -s tests/unit
 
 ci_integration_tests:
-	poetry run pytest -s tests/integration
+	poetry run pytest -s tests/slow/integration
+
+ci_e2e_tests:
+	poetry run pytest -s tests/slow/e2e
 
 
 # CLI Tests
 
 cli_integration_tests:
-	$(call docker_row_exec,cd tests/integration && poetry run pytest -s -v .)
+	$(call docker_row_exec,cd tests/slow/integration && poetry run pytest -s -v .)
 
-cli_test: lint typechecks unittests restart cli_integration_tests
+cli_e2e_tests:
+	$(call docker_row_exec,cd tests/slow/e2e && poetry run pytest -s -v .)
+
+cli_test: lint typechecks unittests restart cli_integration_tests cli_e2e_tests
 
 git_add_all:
 	git add .

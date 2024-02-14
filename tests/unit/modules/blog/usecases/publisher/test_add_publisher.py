@@ -2,7 +2,7 @@ from modules.blog.application.usecases.publisher.add_publisher import (
     AddPublisherUseCase,
 )
 from modules.blog.domain.entities.publisher import Publisher
-from modules.blog.infra.repos.publisher.fake import PublisherFakeRepository
+from tests.unit.fakes.publisher.repo import PublisherFakeRepository
 
 
 async def test_can_add_post() -> None:

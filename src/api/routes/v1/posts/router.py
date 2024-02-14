@@ -1,3 +1,5 @@
+import logging
+
 from fastapi import APIRouter, Depends
 from sqlalchemy.ext.asyncio import AsyncSession
 
@@ -9,11 +11,13 @@ from modules.blog.domain.entities.post import Post
 from modules.blog.infra.repos.post.sqlalchemy import PostRepository
 from shared.infra.sqlalchemy_orm.db import get_session
 
+lg = logging.getLogger(__name__)
 posts_router = APIRouter(prefix="/posts", tags=["posts"])
 
 
 @posts_router.get("/", response_model=tuple[Post, ...])
 async def get_posts(session: AsyncSession = Depends(get_session)):
+    lg.info(session)
     repo = PostRepository(session)
     use_case = GetPostsUseCase(repo=repo)
     posts = await use_case.get_posts()
