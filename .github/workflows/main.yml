@@ -83,6 +83,9 @@ jobs:
       TEST_DB_PASS: 12345678
       TEST_DB_HOST: localhost
       TEST_DB_PORT: 5432
+      SECRET_KEY: 123
+      PROJECT_TITLE: furniture_shop
+      LOG_LEVEL: INFO
 
     steps:
       - name: Set up Repository
@@ -126,6 +129,9 @@ jobs:
       TEST_DB_PASS: 12345678
       TEST_DB_HOST: localhost
       TEST_DB_PORT: 5432
+      SECRET_KEY: 123
+      PROJECT_TITLE: furniture_shop
+      LOG_LEVEL: INFO
 
     steps:
       - name: Set up Repository
