@@ -15,7 +15,7 @@ async def get_test_session() -> AsyncIterator[AsyncSession]:
         yield session
 
 
-app.dependency_overrides[get_session] = get_test_session
+app.dependency_overrides[get_session] = get_test_session  # noqa
 
 
 @pytest.fixture

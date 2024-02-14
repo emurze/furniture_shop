@@ -127,11 +127,12 @@ jobs:
       TEST_DB_HOST: localhost
       TEST_DB_PORT: 5432
 
+      # Suppress db config to inject test db config
       DB_NAME: ...
       DB_USER: ...
       DB_PASS: ...
       DB_HOST: ...
-      DB_PORT: 555
+      DB_PORT: 5555
 
       SECRET_KEY: 123
       PROJECT_TITLE: furniture_shop
