@@ -1,6 +1,6 @@
 from modules.blog.application.ports.publisher.repo import IPublisherRepository
 from modules.blog.domain.entities.publisher import Publisher
-from tests.unit.fakes.core.repo import FakeRepositoryMixin
+from tests.unit.core.repo import FakeRepositoryMixin
 
 
 class PublisherFakeRepository(

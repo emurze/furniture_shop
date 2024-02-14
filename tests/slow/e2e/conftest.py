@@ -10,12 +10,12 @@ from api.main import app
 from tests.slow.conftest import async_session_maker
 
 
-async def get_test_session() -> AsyncIterator[AsyncSession]:
+async def override_to_test_session() -> AsyncIterator[AsyncSession]:
     async with async_session_maker() as session:
         yield session
 
 
-app.dependency_overrides[get_session] = get_test_session  # noqa
+app.dependency_overrides[get_session] = override_to_test_session  # noqa
 
 
 @pytest.fixture
