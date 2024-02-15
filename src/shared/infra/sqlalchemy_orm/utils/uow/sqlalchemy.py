@@ -22,10 +22,10 @@ class SqlAlchemyUnitOfWork(IBaseUnitOfWork):
 
     async def __aexit__(self, *args) -> None:
         await self.rollback()
-        self.session.close()
+        await self.session.close()
 
     async def commit(self) -> None:
-        self.session.commit()
+        await self.session.commit()
 
     async def rollback(self) -> None:
-        self.session.rollback()
+        await self.session.rollback()

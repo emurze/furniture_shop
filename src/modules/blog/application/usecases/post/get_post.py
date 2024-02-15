@@ -14,4 +14,5 @@ class GetPostUseCase(IGetPostUseCase):
     async def get_post(self, **kw) -> Post:
         async with self.uow:
             post = await self.uow.posts.get(**kw)
-            return post
+            await self.uow.commit()
+        return post

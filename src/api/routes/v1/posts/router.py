@@ -37,4 +37,4 @@ async def add_post(dto: PostAddDTO, uow: BlogUOWDep):
         draft=dto.draft,
     )
     use_case = AddPostUseCase(uow)
-    use_case.add_post(post)
+    await use_case.add_post(post)

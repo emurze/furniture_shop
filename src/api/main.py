@@ -8,11 +8,11 @@ from api.routing import set_routes
 from shared.infra.sqlalchemy_orm.base import base
 
 configure_logging()
+base.run_mappers()
 
 
 @asynccontextmanager
 async def lifespan(_app: FastAPI) -> AsyncIterator[None]:
-    base.run_mappers()
     yield
 
 

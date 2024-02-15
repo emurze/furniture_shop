@@ -1,8 +1,7 @@
 from collections.abc import Iterable
 
-from sqlalchemy import MetaData
-
 from shared.infra.sqlalchemy_orm.core.base.ports import Contract
+from shared.infra.sqlalchemy_orm.core.ports import MetaData
 from shared.infra.sqlalchemy_orm.utils.helpers import combine_metadata
 
 

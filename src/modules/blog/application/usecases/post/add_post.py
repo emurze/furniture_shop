@@ -14,3 +14,4 @@ class AddPostUseCase(IAddPostUseCase):
     async def add_post(self, post: Post) -> None:
         async with self.uow:
             self.uow.posts.add(post)
+            await self.uow.commit()
