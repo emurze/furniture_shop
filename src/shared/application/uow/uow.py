@@ -1,10 +1,10 @@
 from collections.abc import Callable
 
-from shared.infra.sqlalchemy_orm.utils.uow.utils import set_repos
-from shared.infra.sqlalchemy_orm.utils.uow.ports import IBaseUnitOfWork
+from shared.application.uow import IBaseUnitOfWork
+from shared.application.uow.utils import set_repos
 
 
-class SqlAlchemyUnitOfWork(IBaseUnitOfWork):
+class BaseUnitOfWork(IBaseUnitOfWork):
     """
     Extend this class for a new unit of work
 

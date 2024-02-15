@@ -3,7 +3,7 @@ import inspect
 from collections.abc import Iterator
 from typing import Any
 
-from shared.infra.sqlalchemy_orm.utils.uow.ports import IOpenedUnitOfWork
+from shared.application.uow.ports import IOpenedUnitOfWork
 
 
 def set_repos(uow_instance: IOpenedUnitOfWork) -> None:

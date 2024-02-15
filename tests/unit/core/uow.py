@@ -2,7 +2,7 @@ import copy
 from collections.abc import Iterator
 from typing import Any
 
-from shared.infra.sqlalchemy_orm.utils.uow import IBaseUnitOfWork
+from shared.application.uow import IBaseUnitOfWork
 from tests.unit.core.utils import set_repos
 
 
