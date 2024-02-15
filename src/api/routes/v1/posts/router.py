@@ -2,7 +2,7 @@ import logging
 
 from fastapi import APIRouter
 
-from api.dependencies import BlogUOWDep
+from main.fastapi import BlogUOWDep
 from modules.blog.application.dtos.post import PostAddDTO
 from modules.blog.application.usecases.post.add_post import AddPostUseCase
 from modules.blog.application.usecases.post.get_post import GetPostUseCase

@@ -22,3 +22,4 @@ class IBaseUnitOfWork(abc.ABC):
 
 class IOpenedUnitOfWork(Protocol):
     session: Any
+    _repos: dict

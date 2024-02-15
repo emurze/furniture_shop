@@ -1,6 +1,6 @@
 from fastapi import APIRouter
 
-from api.dependencies import BlogUOWDep
+from main.fastapi import BlogUOWDep
 from modules.blog.application.dtos.publisher import AddPublisherDTO
 from modules.blog.application.usecases.publisher.add_publisher import (
     AddPublisherUseCase,

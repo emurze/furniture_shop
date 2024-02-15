@@ -9,12 +9,13 @@ class SqlAlchemyUnitOfWork(IBaseUnitOfWork):
     Extend this class for a new unit of work
 
     Attributes example:
-        posts: Annotated[IPostRepository, PostFakeRepository]
-        publishers: Annotated[IPublisherRepository, PublisherFakeRepository]
+        posts: type[IPostRepository]
+        publishers: type[IPublisherRepository]
     """
 
-    def __init__(self, session_factory: Callable) -> None:
+    def __init__(self, session_factory: Callable, **repos) -> None:
         self.session_factory = session_factory
+        self._repos = repos
 
     async def __aenter__(self) -> None:
         self.session = self.session_factory()
