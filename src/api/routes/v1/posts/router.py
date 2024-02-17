@@ -1,40 +1,28 @@
-import logging
-
 from fastapi import APIRouter
 
 from main.fastapi import BlogUOWDep
-from modules.blog.application.dtos.post import PostAddDTO
-from modules.blog.application.usecases.post.add_post import AddPostUseCase
-from modules.blog.application.usecases.post.get_post import GetPostUseCase
-from modules.blog.application.usecases.post.get_posts import GetPostsUseCase
-from modules.blog.domain.entities.post import Post
+from modules.blog.application.dtos.post import PostAddDTO, PostGetDTO
+from modules.blog.application.usecases import post as use_cases
 
-lg = logging.getLogger(__name__)
 posts_router = APIRouter(prefix="/posts", tags=["posts"])
 
 
-@posts_router.get("/", response_model=tuple[Post, ...])
+@posts_router.get("/", response_model=list[PostGetDTO])
 async def get_posts(uow: BlogUOWDep):
-    use_case = GetPostsUseCase(uow)
-    posts = await use_case.get_posts()
+    use_case = use_cases.GetPostsUseCase(uow)
+    posts = await use_case.execute()
     return posts
 
 
-@posts_router.get("/{post_id}", response_model=tuple[Post, ...])
+@posts_router.get("/{post_id}", response_model=PostGetDTO)
 async def get_post(post_id: int, uow: BlogUOWDep):
-    use_case = GetPostUseCase(uow)
-    post = await use_case.get_post(id=post_id)
+    use_case = use_cases.GetPostUseCase(uow)
+    post = await use_case.execute(id=post_id)
     return post
 
 
-@posts_router.post("/", response_model=None)
+@posts_router.post("/", response_model=int)
 async def add_post(dto: PostAddDTO, uow: BlogUOWDep):
-    post = Post(
-        id=dto.id,
-        title=dto.title,
-        content=dto.content,
-        publisher_id=dto.publisher_id,
-        draft=dto.draft,
-    )
-    use_case = AddPostUseCase(uow)
-    await use_case.add_post(post)
+    use_case = use_cases.AddPostUseCase(uow)
+    post_id = await use_case.execute(dto)
+    return post_id

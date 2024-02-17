@@ -6,8 +6,8 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from modules.blog.application.ports.uow import IBlogUnitOfWork
 from modules.blog.application.uow import BlogUnitOfWork
 from shared.infra.sqlalchemy_orm.db import get_session
-from modules.blog.infra.repos.post.sqlalchemy import PostRepository
-from modules.blog.infra.repos.publisher.sqlalchemy import PublisherRepository
+from modules.blog.infra.repos.post import PostRepository
+from modules.blog.infra.repos.publisher import PublisherRepository
 
 
 def get_blog_unit_of_work(

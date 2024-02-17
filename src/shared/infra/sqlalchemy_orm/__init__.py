@@ -1,4 +1,4 @@
-from shared.infra.sqlalchemy_orm.core.contract.contract import DBContract
+from shared.infra.sqlalchemy_orm.core.contract import DBContract
 
 """
 You can import from:

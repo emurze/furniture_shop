@@ -13,34 +13,13 @@ async_engine = create_async_engine(db_dsn, echo=True, poolclass=NullPool)
 async_session_maker = async_sessionmaker(async_engine, expire_on_commit=False)
 
 
-@pytest.fixture(scope="session", autouse=True)
-async def prepare_database() -> None:
-    """
-    Recreate the database tables for each session
-    """
-
-    async with async_engine.begin() as conn:
-        async with suppress_echo(async_engine):
-            for table in base.metadata.sorted_tables:
-                sanitized_table_name: ColumnClause = literal_column(table.name)
-                stmt = text(
-                    f"DROP TABLE IF EXISTS {sanitized_table_name} CASCADE"
-                )
-                await conn.execute(stmt)
-
-        await conn.run_sync(base.metadata.create_all)
-
-
 @pytest.fixture(scope="function", autouse=True)
 async def clean_tables() -> None:
     """
     Clean tables data before run test function
     """
 
-    async with async_session_maker() as session:
-        for table in base.metadata.sorted_tables:
-            sanitized_table_name: ColumnClause = literal_column(table.name)
-            stmt = text(f"TRUNCATE TABLE {sanitized_table_name} CASCADE")
-            await session.execute(stmt)
-
-        await session.commit()
+    async with async_engine.begin() as conn:
+        await conn.run_sync(base.metadata.drop_all)
+        await conn.run_sync(base.metadata.create_all)
+        await conn.commit()

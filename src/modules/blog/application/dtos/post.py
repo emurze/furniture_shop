@@ -1,15 +1,14 @@
-from pydantic import BaseModel
+from shared.application.dto import DTOModel
 
 
-class PostGetDTO(BaseModel):
-    id: int
+class PostAddDTO(DTOModel):
     title: str
     content: str
     publisher_id: int
     draft: bool
 
 
-class PostAddDTO(BaseModel):
+class PostGetDTO(DTOModel):
     id: int
     title: str
     content: str

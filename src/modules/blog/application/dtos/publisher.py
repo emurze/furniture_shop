@@ -1,7 +1,12 @@
-from pydantic import BaseModel
+from shared.application.dto import DTOModel
 
 
-class AddPublisherDTO(BaseModel):
+class PublisherAddDTO(DTOModel):
+    name: str
+    city: str
+
+
+class PublisherGetDTO(DTOModel):
     id: int
     name: str
     city: str
